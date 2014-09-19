@@ -1,1 +1,9 @@
-This is a test.
+Team Roster:
+SPENCER CLEGG: 801-930-0780, spencermclegg@gmail.com
+DENVER HOGGATT: 801-703-7196, djhoggatt@gmail.com
+ROHITH PRASAD: 801-897-8827, rohithprasad_25@hotmail.com
+COLTON OTTLEY: 801-941-5981, coltonottley@gmail.com
+
+Compile String:
+gcc -c -O2 -ffloat-store -Wall -Wextra -Wextra -Werror -std=c99 decide.c -o decide.out
+
