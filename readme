@@ -5,5 +5,5 @@ ROHITH PRASAD: 801-897-8827, rohithprasad_25@hotmail.com
 COLTON OTTLEY: 801-941-5981, coltonottley@gmail.com
 
 Compile String:
-gcc -c -O2 -ffloat-store -Wall -Wextra -Wextra -Werror -std=c99 decide.c -o decide.out
+gcc -c -O2 -ffloat-store -Wall -Wextra -Wextra -Werror -std=c99 decide.c test.c
 
