@@ -199,8 +199,9 @@ boolean LIC2()
    return 1;
    // only need one so can quit checking
   }
-  return 0;
+  
 }
+return 0;
 }
 
 
