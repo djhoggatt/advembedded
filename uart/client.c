@@ -37,8 +37,8 @@ main()
     //Initialize Values
     int fd, c, res, i;
     struct termios oldtio, newtio;
-    char * in;
-    char * out;
+    char *in;
+    char out;
 
     // Load the pin configuration
     int ret = system("echo uart1 > /sys/devices/bone_capemgr.9/slots");
@@ -75,23 +75,34 @@ main()
 
     //Enter main while loop
     while (TRUE) {
-	//Read input from user
-	scanf ("User Input: %s", in);
+        //Read input from user
+	printf ("User Input: ");
+        gets(in);
+        strcat(in,"\n");
+	printf("Got Here, with value: %s", in);
 
         //Encrypt
-        for(i = 0; in[i] != '\0'; i++)
-            in[i] = rot13(in[i]);
-
+        for(i = 0; in[i]!= '\0'; i++)
+        { 
+	    in[i] = rot13(in[i]);
+        }
+         
 	//Write input to UART
-	write(fd, in, sizeof(*in));
-
+	write(fd, in, strlen(in));
+	for(i = 0; i < 3000000; i++);
 	//Read the input from the UART
 	//Note, that the read blocks until a newline character is read.
-	read(fd, out , sizeof(*in));
+        //fgets(out,5,);
+	printf("Recieved From Server: ");
+	while(out != '\n')
+	{
+                read(fd,&out, 1);
 
-	//Print out the output
-	printf("Received From Server: %s", out);
-
+		//Print out the output
+		printf("%c", out);
+        }
+	printf("\n");
+	out = '\0';
 	/*
 	int i;
 	char * s;
@@ -110,5 +121,4 @@ main()
     //Close the device
     close (fd);
 }
-
 
