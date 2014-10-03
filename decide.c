@@ -5,7 +5,6 @@
   */
 
 #include "decide.h"
-#include <stdlib.h>
 
 // -- Forward Declarations -- //
 boolean LIC0();
@@ -248,10 +247,9 @@ return 0;
 }
 
 boolean LIC4() {return 0;}  // commented out for now until bug is found
-/*
+
 { int i,j,k,count,flag;
-int * quad;
-quad =(int*) malloc(PARAMETERS.Q_PTS,sizeof(int));
+int quad[100];
  for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.Q_PTS); ++i)
 { count = 0;
   for(j=0;j<PARAMETERS.Q_PTS;++j)
@@ -275,7 +273,7 @@ if (count > PARAMETERS.QUADS)
 
 }
 return 0;
-} */
+} 
 
 
 boolean LIC5()
