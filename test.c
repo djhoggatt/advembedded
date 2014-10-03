@@ -9,6 +9,6 @@
 
 int main()
 {
-printf( "%s \n", "Hellow World" );
+DECIDE();
 return 0;
 }
