@@ -1,0 +1,510 @@
+        -:    0:Source:decide.c
+        -:    0:Programs:2
+        -:    0:Source is newer than graph
+        -:    1:/*
+        -:    2: * Team 11  CS 5785
+        -:    3: * Team Assignment #1: decide.c
+        -:    4: * SPENCER CLEGG, DENVER HOGGATT, ROHITH PRASAD, COLTON OTTLEY
+        -:    5:  */
+        -:    6:
+        -:    7:#include "decide.h"
+        -:    8:#include <stdlib.h>
+        -:    9:
+        -:   10:// -- Forward Declarations -- //
+        -:   11:boolean LIC0();
+        -:   12:boolean LIC1();
+        -:   13:boolean LIC2();
+        -:   14:boolean LIC3();
+        -:   15:boolean LIC4();
+        -:   16:boolean LIC5();
+        -:   17:
+        -:   18:
+        -:   19:boolean all_elements_in_row_are_true(BMATRIX, int);
+        -:   20:double Calculate_Area_Triangle(double, double, double, double ,double ,double);
+        -:   21:double length_point(double ,double ,double ,double );
+        -:   22:double circumcenter(double ,double ,double ,double ,double ,double );
+        -:   23:double angle_points(double, double, double, double ,double ,double);
+        -:   24:int Quadrant_point(double,double);
+        -:   25:
+        -:   26:// -- Globals -- //
+        -:   27:boolean LAUNCH = 0; // Default to no launch.
+        -:   28:
+        -:   29:/*
+        -:   30: *See requirements specification document for decide() function contract.
+        -:   31:*/
+function DECIDE called 4000 returned 100% blocks executed 60%
+     4000:   32:void DECIDE(void)
+        -:   33:{ 
+        -:   34:  int i = 0;
+        -:   35:  int j = 0;
+        -:   36:
+        -:   37:  // -- CMV -- //
+     4000:   38:  CMV[0] = LIC0();
+call    0 returned 100%
+     4000:   39:  CMV[1] = LIC1();
+call    0 returned 100%
+     4000:   40:  CMV[2] = LIC2();
+call    0 returned 100%
+     4000:   41:  CMV[3] = LIC3();
+call    0 returned 100%
+     4000:   42:  CMV[4] = LIC4();
+     4000:   43:  CMV[5] = LIC5();
+call    0 returned 100%
+        -:   44:
+        -:   45: /*
+        -:   46: * Use the logical operator stored in LCM and apply to the booleans
+        -:   47: * stored in the CMV. Store the result in PUM. If "NOTUSED" is found
+        -:   48: * in LCM then PUM defaults to 0 (FALSE).
+        -:   49: */
+    64000:   50:for(i = 0; i < 15; i++ )
+branch  0 taken 94% (fallthrough)
+branch  1 taken 6%
+        -:   51:{
+   900000:   52:  for(j = 0; j < 15; j++ )
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   53:  {
+   900000:   54:    if (LCM[i][j] == ORR) { PUM[i][j] = (CMV[i] || CMV[j]); }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+   900000:   55:    else if (LCM[i][j] == ANDD) { PUM[i][j] = (CMV[i] && CMV[j]); }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+   900000:   56:    else PUM[i][j] = 0;
+        -:   57:  }
+        -:   58:}
+        -:   59:
+        -:   60:/*
+        -:   61: * FUV[i] should be set to true if PUM[i,i] is false
+        -:   62: * or if all elements in PUM row i are true. (See page 6
+        -:   63: * of the protocol.)
+        -:   64: */
+    60000:   65:for( i = 0; i < 15; i++ )
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   66:{
+    60000:   67:  if ((PUM[i][i] == 0) || ( all_elements_in_row_are_true(PUM,i) )){ FUV[i] = 1; }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 never executed
+branch  3 never executed
+    #####:   68:  else { FUV[i] = 0; }
+        -:   69:}
+        -:   70:
+        -:   71:/*
+        -:   72: * Should we Launch?
+        -:   73: * Check all the elements of the Final Unlocking Vector (FUV)
+        -:   74: * for any FALSE entries. If there are any FALSE entries then
+        -:   75: * we should not launch (LAUNCH = 0).
+        -:   76: */
+        -:   77:boolean fuv_has_false = 0;
+    60000:   78:for(i = 0; i < 15; i++ )
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   79:{
+    60000:   80:  if (FUV[i] == 0) { fuv_has_false = 1; }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:   81:}
+     4000:   82:if (fuv_has_false == 0) { LAUNCH = 1; }
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+    #####:   83:else { LAUNCH = 0; }
+        -:   84:
+        -:   85:
+        -:   86:
+     4000:   87:}
+        -:   88:
+        -:   89:
+        -:   90:/*
+        -:   91: * CMV[0]: There exists at least one set of two consecutive data points
+        -:   92: * that are a distance greater than the length, LENGTH1, apart.
+        -:   93: */
+function LIC0 called 4000 returned 100% blocks executed 100%
+     4000:   94:boolean LIC0()
+        -:   95:{ int ch,i;
+        -:   96:  double a;
+   202000:   97:  for( i = 0; i<NUMPOINTS-1; i++)
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:   98:    {  //Finds distance between points and compares them
+   200000:   99:       a = length_point(X[i],Y[i],X[i+1],Y[i+1]);
+   200000:  100:       ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
+   200000:  101:       if(ch == LT)
+branch  0 taken 99% (fallthrough)
+branch  1 taken 1%
+        -:  102:         return 1;
+        -:  103:    }
+        -:  104:   return 0;
+        -:  105:}
+        -:  106:
+        -:  107:/*
+        -:  108: * LIC[1]: There exists at least one set of three consecutive data points that cannot all
+        -:  109: * be contained within or on a circle of radius RADIUS1
+        -:  110: * 3 points in space can form 2 basic shapes: Line or Triangle;
+        -:  111: * If Slope of the line formed by any 2 points eqauls that of any other combination, then the points lie on a single Line
+        -:  112: * If the Slope of a line formed by any two points are different, they form a Triangle
+        -:  113: */
+        -:  114:
+        -:  115:boolean LIC1()
+function LIC1 called 4000 returned 100% blocks executed 36%
+     4000:  116:{ int ch,ch1,ch2,ch3,i;
+        -:  117:  double a,b,r;
+        -:  118:
+        -:  119:  for( i = 0; i<NUMPOINTS-2; i++)
+   396000:  120:    {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:  121:      //Finding slope of a line by standard formulae( Learnt in Highschool)
+        -:  122:
+        -:  123:     a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
+   392000:  124:     b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
+   392000:  125:     //Compares Slopes to decide if line or Triangle
+        -:  126:     ch=  DOUBLECOMPARE(a,b);
+        -:  127:       if(ch == EQ)
+   392000:  128:          {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        -:  129:            // Decidesthat it is a Line So copmute the greatest seperation between the points to find length of the line
+        -:  130:            a = length_point(X[i],Y[i],X[i+1],Y[i+1]);
+        -:  131:            b = length_point(X[i],Y[i],X[i+2],Y[i+2]);
+    #####:  132:            r = length_point(X[i+2],Y[i+2],X[i+1],Y[i+1]);
+    #####:  133:            //Compares 2 Lengths
+        -:  134:            ch1 = DOUBLECOMPARE(a,b);
+        -:  135:             if (ch1 == GT)
+    #####:  136:               { //Compares the greater of the 2 with the third
+branch  0 never executed
+branch  1 never executed
+        -:  137:                 ch2 = DOUBLECOMPARE(a,r);
+        -:  138:                  if(ch2 == GT)
+    #####:  139:                    {
+branch  0 never executed
+branch  1 never executed
+        -:  140:                       //For a Circle to be Able to encompass the 3 points,
+        -:  141:                       // Radius of circle must be greater than or equal to half the length of the Line
+        -:  142:                       ch3 = DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1);
+    #####:  143:                        if (ch3 == GT)
+    #####:  144:                          {return 1;}
+branch  0 never executed
+branch  1 never executed
+        -:  145:                    }
+        -:  146:                  else
+        -:  147:                      {
+        -:  148:                       //For a Circle to be Able to encompass the 3 points,
+        -:  149:                       // Radius of circle must be greater than or equal to half the length of the Line
+        -:  150:                       ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+    #####:  151:                        if (ch3 == GT)
+    #####:  152:                          {return 1;}
+branch  0 never executed
+branch  1 never executed
+        -:  153:                      }
+        -:  154:                }
+        -:  155:             else
+        -:  156:              {  //Compares the greater of the 2 with the third
+        -:  157:                 ch2 = DOUBLECOMPARE(b,r);
+        -:  158:                  if(ch2 == GT)
+    #####:  159:                    {
+branch  0 never executed
+branch  1 never executed
+        -:  160:                      //For a Circle to be Able to encompass the 3 points,
+        -:  161:                      // Radius of circle must be greater than or equal to half the length of the Line
+        -:  162:                       ch3 = DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1);
+    #####:  163:                        if (ch3 == GT)
+    #####:  164:                          {return 1;}
+branch  0 never executed
+branch  1 never executed
+        -:  165:                    }
+        -:  166:                  else
+        -:  167:                      {
+        -:  168:                       //For a Circle to be Able to encompass the 3 points,
+        -:  169:                       // Radius of circle must be greater than or equal to half the length of the Line
+        -:  170:                       ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+    #####:  171:                        if (ch3 == GT)
+    #####:  172:                          {return 1;}
+branch  0 never executed
+branch  1 never executed
+        -:  173:                      }
+        -:  174:               }
+        -:  175:            }
+        -:  176:       else
+        -:  177:          { //The Points form a Triangle. All Triangles are Circumscribable
+        -:  178:            // For the 3 points to be contained,
+        -:  179:            // the Radius of the Cicle should be greater than or equal to the Circumradius if triangle is acute or right.
+        -:  180:            // For abtuse, Radius of circle must be greater than halff the length of the longest side
+        -:  181:             double ang1,ang2,ang3;
+        -:  182:             ang1 = angle_points(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+   392000:  183:             ang2 = angle_points(X[i],Y[i],X[i+2],Y[i+2],X[i+1],Y[i+1]);
+call    0 returned 100%
+   392000:  184:             ang3 = angle_points(X[i+1],Y[i+1],X[i],Y[i],X[i+2],Y[i+2]);
+call    0 returned 100%
+   392000:  185:             if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
+call    0 returned 100%
+   392000:  186:             {r  = circumcenter(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+    #####:  187:              }
+call    0 never executed
+        -:  188:             else
+        -:  189:               { if(DOUBLECOMPARE(ang1,PI/2)==GT)
+   392000:  190:                     { r = (length_point(X[i],Y[i],X[i+2],Y[i+2]))/2;
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+   784000:  191:                     }
+        -:  192:                  else if(DOUBLECOMPARE(ang2,PI/2)==GT)
+    #####:  193:                     { r = (length_point(X[i],Y[i],X[i+1],Y[i+1]))/2;
+branch  0 never executed
+branch  1 never executed
+    #####:  194:                     }
+        -:  195:                  else
+        -:  196:                     { r = (length_point(X[i+1],Y[i+1],X[i+2],Y[i+2]))/2;
+    #####:  197:
+        -:  198:                      }
+        -:  199:
+        -:  200:               }
+        -:  201:              ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS1,r);
+   392000:  202:              if(ch1 == LT)
+   392000:  203:                  { return 1;}
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  204:
+        -:  205:    }
+        -:  206:  }
+        -:  207:   return 0;
+        -:  208:}
+        -:  209:
+        -:  210:boolean LIC2()
+function LIC2 called 4000 returned 100% blocks executed 30%
+     4000:  211:{ int i;
+        -:  212: for(i=0; i<(NUMPOINTS-2); ++i)
+   396000:  213:{  if (((DOUBLECOMPARE(X[i], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i], Y[i+1]) == EQ))||((DOUBLECOMPARE(X[i+2], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i+2], Y[i+1]) == EQ)))
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+  1176000:  214:        continue;
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+   392000:  215:else
+        -:  216:{
+        -:  217:  double Angle = angle_points(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+    #####:  218:  if((DOUBLECOMPARE(Angle, PI - PARAMETERS.EPSILON) == LT)||(DOUBLECOMPARE(Angle, PI + PARAMETERS.EPSILON) == GT))
+call    0 never executed
+    #####:  219:  {
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  220:   return 1;
+        -:  221:   // only need one so can quit checking
+        -:  222:  }
+        -:  223:
+        -:  224:
+        -:  225: }
+        -:  226:}
+        -:  227:return 0;
+        -:  228:}
+        -:  229:/*
+        -:  230: * CMV[3]: There exists at least one set of three consecutive data points
+        -:  231: * that are the vertices of a triangle with area greater than AREA1.
+        -:  232: */
+        -:  233:
+        -:  234:boolean LIC3()
+function LIC3 called 4000 returned 100% blocks executed 89%
+     4000:  235:{ int i;
+        -:  236: for(i=0; i<(NUMPOINTS-2); ++i)
+   396000:  237:{
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:  238:  double triangle_area = Calculate_Area_Triangle(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+   392000:  239:  if(DOUBLECOMPARE(triangle_area, PARAMETERS.AREA1) == GT)
+call    0 returned 100%
+   784000:  240:  {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  241:   return 1;
+        -:  242:   // only need one so can quit checking
+        -:  243:  }
+        -:  244:
+        -:  245:}
+        -:  246:return 0;
+        -:  247:}
+        -:  248:
+        -:  249:boolean LIC4() {return 0;}  // commented out for now until bug is found
+function LIC4 called 0 returned 0% blocks executed 0%
+    #####:  250:/*
+        -:  251:{ int i,j,k,count,flag;
+        -:  252:int * quad;
+        -:  253:quad =(int*) malloc(PARAMETERS.Q_PTS,sizeof(int));
+        -:  254: for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.Q_PTS); ++i)
+        -:  255:{ count = 0;
+        -:  256:  for(j=0;j<PARAMETERS.Q_PTS;++j)
+        -:  257:      { quad[j] = Quadrant_point(X[i+j],Y[i+j]);
+        -:  258:      }
+        -:  259:  for(j=0;j<PARAMETERS.Q_PTS;++j)
+        -:  260:    { flag = 0;
+        -:  261:      for (k=j+1;k<PARAMETERS.Q_PTS;++k)
+        -:  262:           {
+        -:  263:             if(quad[j] == quad[k])
+        -:  264:              { flag =1;
+        -:  265:              }
+        -:  266:            }
+        -:  267:      if(flag == 0)
+        -:  268:       { count ++;}
+        -:  269:      else
+        -:  270:        continue;
+        -:  271:        }
+        -:  272:if (count > PARAMETERS.QUADS)
+        -:  273:   {return 1;}
+        -:  274:
+        -:  275:}
+        -:  276:return 0;
+        -:  277:} */
+        -:  278:
+        -:  279:
+        -:  280:boolean LIC5()
+function LIC5 called 4000 returned 100% blocks executed 75%
+     4000:  281:{ int i;
+        -:  282: for(i=0; i<(NUMPOINTS-1); ++i)
+   400000:  283:{
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:  284:  if(DOUBLECOMPARE(X[i], X[i+1]) == GT)
+   792000:  285:  {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        -:  286:   return 1;
+        -:  287:   // only need one so can quit checking
+        -:  288:  }
+        -:  289:
+        -:  290:}
+        -:  291:return 0;
+        -:  292:}
+        -:  293:
+        -:  294:
+        -:  295:// -- Helper Functions -- //
+        -:  296:
+        -:  297:/*
+        -:  298: * This function calculates the area of a triangle
+        -:  299: * given three points in the same plane.
+        -:  300: * This function was implemented using basic mathematical formulae (by ourselves).
+        -:  301: */
+        -:  302:double Calculate_Area_Triangle(double ax, double ay, double bx, double by, double cx, double cy)
+function Calculate_Area_Triangle called 392000 returned 100% blocks executed 100%
+   392000:  303:{
+        -:  304:    double A = length_point(ax,ay,bx,by);
+        -:  305:    double B = length_point(bx,by,cx,cy);
+        -:  306:    double C = length_point(ax,ay,cx,cy);
+        -:  307:
+        -:  308:
+        -:  309:    // Heron's formula for area calculation
+        -:  310:    // area = sqrt( s * (s-a) * (s-b) * (s-c))
+        -:  311:    double s = (A + B + C) / 2;
+   392000:  312:    double area = sqrt( s * (s-A) * (s-B) * (s-C));
+   392000:  313:	return area;
+   392000:  314:}
+        -:  315:
+        -:  316:/*
+        -:  317: * This function takes in a two by two boolean matrix and
+        -:  318: * the index of a row number.  It returns 1 (TRUE) if all elements
+        -:  319: * in the given row are 1 (TRUE). Otherwise returns FALSE.
+        -:  320: */
+        -:  321:boolean all_elements_in_row_are_true(BMATRIX two_by_two_matrix, int row)
+function all_elements_in_row_are_true called 0 returned 0% blocks executed 0%
+    #####:  322:{ int column;
+        -:  323:  boolean all_elements_are_true = 1;
+        -:  324:  // Loop through each element in the row
+        -:  325:  for( column = 0; column < 15; column++ )
+    #####:  326:  {
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  327:    if (two_by_two_matrix[row][column] == 0) { all_elements_are_true = 0; }
+    #####:  328:  }
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  329:  return all_elements_are_true;
+    #####:  330:} // end all_elements_in_row_are_true()
+        -:  331:
+        -:  332:
+        -:  333:/*
+        -:  334: * This function takes the points in space and returns the distance of seperation of the points
+        -:  335: * formula is that of standard coordinate distance between poinrs.
+        -:  336: */
+        -:  337:double length_point(double x1,double y1,double x2,double y2)
+function length_point called 0 returned 0% blocks executed 0%
+    #####:  338:{ double a = 0;
+        -:  339:   a = sqrt((double)((x2 - x1)*(x2 - x1) +(y2 - y1)*(y2 - y1)));
+  2160000:  340:   return a;
+    #####:  341:}
+        -:  342:
+        -:  343:/*
+        -:  344: * This function takes the vertices of a triangle and returns thier circum radius
+        -:  345: * formula is that of standard Circum radius of a triangle (Learnt in High School).
+        -:  346: */
+        -:  347:double circumcenter(double x1,double y1,double x2,double y2,double x3,double y3)
+function circumcenter called 0 returned 0% blocks executed 0%
+    #####:  348:{ double CRadius,Area,a,b,c;
+        -:  349:    a = length_point(x1,y1,x2,y2);
+        -:  350:    b = length_point(x1,y1,x3,y3);
+        -:  351:    c = length_point(x3,y3,x2,y2);
+        -:  352:    Area = Calculate_Area_Triangle(x1,y1,x2,y2,x3,y3);
+    #####:  353:    CRadius = (a*b*c)/(4*Area);
+call    0 never executed
+    #####:  354:    return CRadius;
+    #####:  355:}
+        -:  356:
+        -:  357:double angle_points(double x1, double y1, double x2,double y2,double x3,double y3)
+function angle_points called 1176000 returned 100% blocks executed 100%
+  1176000:  358:{ double cos_Angle,Angle,a,b,c;
+        -:  359:    a = length_point(x1,y1,x2,y2);
+        -:  360:    b = length_point(x3,y3,x2,y2);
+        -:  361:    c = length_point(x1,y1,x3,y3);
+        -:  362:
+        -:  363:/* By law of cosines c^2 = a^2 + b^2 - 2abcos(angle theta)  */
+        -:  364:
+        -:  365:   cos_Angle = (((a*a)+(b*b)-(c*c))/(2*a*b));
+  1176000:  366:   Angle = acos(cos_Angle);
+  1176000:  367:   return Angle;
+  1176000:  368:}
+        -:  369:
+        -:  370:int Quadrant_point(double x,double y)
+function Quadrant_point called 0 returned 0% blocks executed 0%
+    #####:  371:{ if((x>=0)&&(y>=0))
+    #####:  372:    {return 1;}
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  373:    else if((x<0)&&(y>=0))
+    #####:  374:    {return 2;}
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  375:    else if((x<=0)&&(y<0))
+    #####:  376:    {return 3;}
+branch  0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+        -:  377:    return 4;
+    #####:  378:    }

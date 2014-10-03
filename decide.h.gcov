@@ -1,0 +1,188 @@
+        -:    0:Source:decide.h
+        -:    0:Programs:2
+        -:    1:// This is version 4 of this file.
+        -:    2:
+        -:    3:#include <math.h>
+        -:    4:
+        -:    5://////////// CONSTANT //////////
+        -:    6:
+        -:    7:static const double PI = 3.1415926535; 
+        -:    8:
+        -:    9://////////// TYPE DECLARATIONS ///////////
+        -:   10:
+        -:   11:typedef enum { NOTUSED=777, ORR, ANDD } CONNECTORS;
+        -:   12:
+        -:   13:// pointer to an array of 100 doubles
+        -:   14:typedef double *COORDINATE;
+        -:   15:
+        -:   16:// pointer to a 2-D array of [15,15] CONNECTORS
+        -:   17:typedef CONNECTORS **CMATRIX;
+        -:   18:
+        -:   19:// always in the range [0..1]
+        -:   20:typedef int boolean;
+        -:   21:
+        -:   22:// pointer to a 2-D array of [15,15] booleans
+        -:   23:typedef boolean **BMATRIX;
+        -:   24:
+        -:   25:// pointer to an array of 15 booleans
+        -:   26:typedef boolean *VECTOR; 
+        -:   27:
+        -:   28:typedef enum { LT=1111, EQ, GT} COMPTYPE; 
+        -:   29:
+        -:   30:// inputs to the DECIDE() function
+        -:   31:typedef struct {
+        -:   32:  double LENGTH1;   // Length in LICs 0, 7, 12
+        -:   33:  double RADIUS1;   // Radius in LICs 1, 8, 13
+        -:   34:  double EPSILON;   // Deviation from PI in LICs 2, 9
+        -:   35:  double AREA1;     // Area in LICs 3, 10, 14
+        -:   36:  int Q_PTS;        // No. of consecutive points in LIC 4
+        -:   37:  int QUADS;        // No. of quadrants in LIC 4
+        -:   38:  double DIST;      // Distance in LIC 6 
+        -:   39:  int N_PTS;        // No. of consecutive pts. in LIC 6
+        -:   40:  int K_PTS;        // No. of int. pts. in LICs 7, 12
+        -:   41:  int A_PTS;        // No. of int. pts. in LICs 8, 13
+        -:   42:  int B_PTS;        // No. of int. pts. in LICs 8, 13
+        -:   43:  int C_PTS;        // No. of int. pts. in LIC 9
+        -:   44:  int D_PTS;        // No. of int. pts. in LIC 9
+        -:   45:  int E_PTS;        // No. of int. pts. in LICs 10, 14
+        -:   46:  int F_PTS;        // No. of int. pts. in LICs 10, 14
+        -:   47:  int G_PTS;        // No. of int. pts. in LIC 11
+        -:   48:  double LENGTH2;   // Maximum length in LIC 12
+        -:   49:  double RADIUS2;   // Maximum radius in LIC 13
+        -:   50:  double AREA2;     // Maximum area in LIC 14
+        -:   51:} PARAMETERS_T;
+        -:   52:
+        -:   53://////////// global variable declarations ////////////
+        -:   54:
+        -:   55:PARAMETERS_T PARAMETERS;
+        -:   56:
+        -:   57:// X coordinates of data points
+        -:   58:COORDINATE X;
+        -:   59:
+        -:   60:// Y coordinates of data points
+        -:   61:COORDINATE Y;
+        -:   62:
+        -:   63:// Number of data points
+        -:   64:int NUMPOINTS;
+        -:   65:
+        -:   66:// Logical Connector Matrix 
+        -:   67:CMATRIX LCM;
+        -:   68:
+        -:   69:// Preliminary Unlocking Matrix
+        -:   70:BMATRIX PUM;
+        -:   71:
+        -:   72:// Conditions Met Vector
+        -:   73:VECTOR CMV;
+        -:   74:
+        -:   75:// Final Unlocking Vector
+        -:   76:VECTOR FUV;
+        -:   77:
+        -:   78:// Decision: Launch or No Launch
+        -:   79:boolean LAUNCH;
+        -:   80:
+        -:   81:// compares floating point numbers -- see Nonfunctional Requirements
+        -:   82:static inline 
+        -:   83:COMPTYPE DOUBLECOMPARE (double A, 
+        -:   84:			double B)
+        -:   85:{
+  3340000:   86:  if (fabs(A-B)<0.000001) return EQ;
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+branch  2 taken 100% (fallthrough)
+branch  3 taken 0%
+branch  4 taken 0% (fallthrough)
+branch  5 taken 100%
+branch  6 taken 0% (fallthrough)
+branch  7 taken 100%
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+branch 11 never executed
+branch 12 never executed
+branch 13 never executed
+branch 14 never executed
+branch 15 never executed
+branch 16 taken 100% (fallthrough)
+branch 17 taken 0%
+branch 18 never executed
+branch 19 never executed
+branch 20 never executed
+branch 21 never executed
+branch 22 never executed
+branch 23 never executed
+branch 24 never executed
+branch 25 never executed
+branch 26 never executed
+branch 27 never executed
+branch 28 never executed
+branch 29 never executed
+branch 30 never executed
+branch 31 never executed
+branch 32 taken 100% (fallthrough)
+branch 33 taken 0%
+branch 34 never executed
+branch 35 never executed
+branch 36 never executed
+branch 37 never executed
+branch 38 taken 100% (fallthrough)
+branch 39 taken 0%
+branch 40 never executed
+branch 41 never executed
+branch 42 taken 100% (fallthrough)
+branch 43 taken 0%
+branch 44 taken 100% (fallthrough)
+branch 45 taken 0%
+  2160000:   87:  if (A<B) return LT;
+branch  0 never executed
+branch  1 never executed
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+branch  7 never executed
+branch  8 never executed
+branch  9 never executed
+branch 10 never executed
+branch 11 never executed
+branch 12 never executed
+branch 13 never executed
+branch 14 never executed
+branch 15 never executed
+branch 16 taken 100% (fallthrough)
+branch 17 taken 0%
+branch 18 never executed
+branch 19 never executed
+branch 20 never executed
+branch 21 never executed
+branch 22 never executed
+branch 23 never executed
+branch 24 never executed
+branch 25 never executed
+branch 26 never executed
+branch 27 never executed
+branch 28 never executed
+branch 29 never executed
+branch 30 never executed
+branch 31 never executed
+branch 32 taken 100% (fallthrough)
+branch 33 taken 0%
+branch 34 never executed
+branch 35 never executed
+branch 36 never executed
+branch 37 never executed
+branch 38 taken 100% (fallthrough)
+branch 39 taken 0%
+branch 40 never executed
+branch 41 never executed
+branch 42 taken 100% (fallthrough)
+branch 43 taken 0%
+branch 44 taken 99% (fallthrough)
+branch 45 taken 1%
+        -:   88:  return GT;
+        -:   89:}
+        -:   90:
+        -:   91:// function you must write
+        -:   92:void DECIDE(void);
+        -:   93:
+        -:   94:///////////// end of file /////////////

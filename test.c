@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "decide.h"
+#include "limits.h"
 
 // -- Forward Declarations -- //
 int initialize_globals(void);
@@ -16,8 +17,38 @@ int clean_globals(void);
 int main()
 {
 initialize_globals();
-DECIDE();
+
+
+// -- LIC0 Tests -- //
+
+// LIC0-Test1 
+
+X[0] = 0;
+Y[0] = 0;
+X[1] = 0;
+Y[1] = 0;
+boolean test_passed = 1;
+
+PARAMETERS.LENGTH1 = 1,000,000;  // max according to func. req #3 
+while ( PARAMETERS.LENGTH1 > 0 )
+{
+  DECIDE();
+  if (CMV[0] != 0) { test_passed = 0; }
+  PARAMETERS.LENGTH1 = PARAMETERS.LENGTH1 - 0.001;  // max precision
+}
+
+PARAMETERS.LENGTH1 = -1,000,000;  // max according to func. req #3 
+while ( PARAMETERS.LENGTH1 < 0 )
+{
+  DECIDE();
+  if (CMV[0] == 0) { test_passed = 0; }
+  PARAMETERS.LENGTH1 = PARAMETERS.LENGTH1 + 0.001;  // max precision
+}
+
+printf( "LIC0-Test1 %s\n", (test_passed == 1) ? "PASSED.": "FAILED." );
 clean_globals();
+
+
 return 0;
 }
 
@@ -83,7 +114,7 @@ int initialize_globals(void)
   PARAMETERS.AREA2   = 650689.2825;   // Maximum area in LIC 14
   
   // Number of Points
-  NUMPOINTS = 3;
+  NUMPOINTS = 100;
   
   // X and Y initialize to 0
   X = malloc(sizeof(double)*NUMPOINTS);

@@ -1,0 +1,180 @@
+        -:    0:Source:test.c
+        -:    0:Programs:2
+        -:    1:/*
+        -:    2: * Team 11  CS 5785
+        -:    3: * Unit Tests for decide.c
+        -:    4: * SPENCER CLEGG, DENVER HOGGATT, ROHITH PRASAD, COLTON OTTLEY
+        -:    5:  */
+        -:    6:
+        -:    7:#include <stdio.h>
+        -:    8:#include <stdlib.h>
+        -:    9:#include "decide.h"
+        -:   10:#include "limits.h"
+        -:   11:
+        -:   12:// -- Forward Declarations -- //
+        -:   13:int initialize_globals(void);
+        -:   14:int clean_globals(void);
+        -:   15:
+        -:   16:
+function main called 2 returned 100% blocks executed 83%
+        2:   17:int main()
+        -:   18:{
+        2:   19:initialize_globals();
+call    0 returned 100%
+        -:   20:
+        -:   21:
+        -:   22:// -- LIC0 Tests -- //
+        -:   23:
+        -:   24:// LIC0-Test1 
+        -:   25:
+        2:   26:X[0] = 0;
+        2:   27:Y[0] = 0;
+        2:   28:X[1] = 0;
+        2:   29:Y[1] = 0;
+        -:   30:boolean test_passed = 1;
+        -:   31:
+        2:   32:PARAMETERS.LENGTH1 = 1,000,000;  // max according to func. req #3 
+     2004:   33:while ( PARAMETERS.LENGTH1 > 0 )
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:   34:{
+     2000:   35:  DECIDE();
+call    0 returned 100%
+     2000:   36:  if (CMV[0] != 0) { test_passed = 0; }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+     2000:   37:  PARAMETERS.LENGTH1 = PARAMETERS.LENGTH1 - 0.001;  // max precision
+        -:   38:}
+        -:   39:
+        2:   40:PARAMETERS.LENGTH1 = -1,000,000;  // max according to func. req #3 
+     2004:   41:while ( PARAMETERS.LENGTH1 < 0 )
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:   42:{
+     2000:   43:  DECIDE();
+call    0 returned 100%
+     2000:   44:  if (CMV[0] == 0) { test_passed = 0; }
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+     2000:   45:  PARAMETERS.LENGTH1 = PARAMETERS.LENGTH1 + 0.001;  // max precision
+        -:   46:}
+        -:   47:
+        2:   48:printf( "LIC0-Test1 %s\n", (test_passed == 1) ? "PASSED.": "FAILED." );
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+        2:   49:clean_globals();
+call    0 returned 100%
+        -:   50:
+        -:   51:
+        -:   52:return 0;
+        -:   53:}
+        -:   54:
+        -:   55:
+        -:   56:// -- Helper Functions -- //
+        -:   57:
+        -:   58:/*
+        -:   59: * This function initializes all the globals needed to
+        -:   60: * needed to call decide()
+        -:   61: */
+function initialize_globals called 2 returned 100% blocks executed 100%
+        2:   62:int initialize_globals(void)
+        -:   63:{ 
+        -:   64:  // Initialize CMV: 1x15 boolean
+        2:   65:  CMV = malloc( sizeof(boolean)*15 );
+        2:   66:  for(int i=0; i<15 ; i++) { CMV[i] = 0; }  // all false
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   67: 
+        -:   68:  // Initialize LCM: 15x15 ANDD, ORR, NOTUSED
+        2:   69:  LCM = (CONNECTORS**) malloc(15*sizeof(CONNECTORS*));
+        2:   70:  for(int i=0; i<15 ; i++) { LCM[i] = (CONNECTORS*)malloc(15*sizeof(CONNECTORS)); }
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   71:    
+       30:   72:  for(int i=0; i<15; i++)
+branch  0 taken 94% (fallthrough)
+branch  1 taken 6%
+        -:   73:  {
+      450:   74:  for(int j=0; j<15; j++) { LCM[i][j] = NOTUSED; }
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   75:  }
+        -:   76: 
+        -:   77:  // Initialize PUM: 15x15 boolean
+        2:   78:  PUM = (boolean**) malloc(15*sizeof(boolean*));
+        2:   79:  for(int i=0; i<15 ; i++) { PUM[i] = (boolean*)malloc(15*sizeof(boolean)); }
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   80:	
+       30:   81:  for(int i=0; i<15; i++)
+branch  0 taken 94% (fallthrough)
+branch  1 taken 6%
+        -:   82:  {
+      450:   83:    for(int j=0; j<15; j++)
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   84:    {
+      450:   85:     if(i==j)
+branch  0 taken 7% (fallthrough)
+branch  1 taken 93%
+       30:   86:      PUM[i][j]=1;  // diagonals = true
+        -:   87:     else
+      420:   88:       PUM[i][j] = 0; // rest = false
+        -:   89:    }
+        -:   90:  }
+        -:   91:  // Initialize FUV: 1x15 boolean
+        2:   92:  FUV = malloc( sizeof(boolean)*15 );
+        2:   93:  for(int i=0; i<15; i++) { FUV[i] = 0; }  // all false
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+        -:   94:  
+        -:   95:  // Initialize Parameters Struct with Any Numbers
+        2:   96:  PARAMETERS.LENGTH1 = 816064.687;    // Length in LICs 0, 7, 12
+        2:   97:  PARAMETERS.RADIUS1 = 513054.8828;   // Radius in LICs 1, 8, 13
+        2:   98:  PARAMETERS.EPSILON = 1.32225;       // Deviation from PI in LICs 2, 9
+        2:   99:  PARAMETERS.AREA1   = 800283.1163;   // Area in LICs 3, 10, 14
+        2:  100:  PARAMETERS.Q_PTS   = 5;             // No. of consecutive points in LIC 4
+        2:  101:  PARAMETERS.QUADS   = 2;             // No. of quadrants in LIC 4
+        2:  102:  PARAMETERS.DIST    = 554724.335;    // Distance in LIC 6
+        2:  103:  PARAMETERS.N_PTS   = 4;             // No. of consecutive pts. in LIC 6
+        2:  104:  PARAMETERS.K_PTS   = 4;             // No. of int. pts. in LICs 7, 12
+        2:  105:  PARAMETERS.A_PTS   = 4;             // No. of int. pts. in LICs 8, 13
+        2:  106:  PARAMETERS.B_PTS   = 4;             // No. of int. pts. in LICs 8, 13
+        2:  107:  PARAMETERS.C_PTS   = 4;             // No. of int. pts. in LIC 9
+        2:  108:  PARAMETERS.D_PTS   = 4;             // No. of int. pts. in LIC 9
+        2:  109:  PARAMETERS.E_PTS   = 4;             // No. of int. pts. in LICs 10, 14
+        2:  110:  PARAMETERS.F_PTS   = 4;             // No. of int. pts. in LICs 10, 14
+        2:  111:  PARAMETERS.G_PTS   = 4;             // No. of int. pts. in LIC 11
+        2:  112:  PARAMETERS.LENGTH2 = 507202.792;    // Maximum length in LIC 12
+        2:  113:  PARAMETERS.RADIUS2 = 559839.0403;   // Maximum radius in LIC 13
+        2:  114:  PARAMETERS.AREA2   = 650689.2825;   // Maximum area in LIC 14
+        -:  115:  
+        -:  116:  // Number of Points
+        2:  117:  NUMPOINTS = 100;
+        -:  118:  
+        -:  119:  // X and Y initialize to 0
+        2:  120:  X = malloc(sizeof(double)*NUMPOINTS);
+        2:  121:  Y = malloc(sizeof(double)*NUMPOINTS);
+      202:  122:  for(int i=0; i<NUMPOINTS; i++)
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:  123:  { 
+      200:  124:    X[i] = 0;
+      200:  125:    Y[i] = 0;
+        -:  126:  }
+        -:  127:    
+        2:  128:  return 0;
+        -:  129:} // end nitialize_globals()
+        -:  130:
+        -:  131:/*
+        -:  132: * This function frees all the malloc'd memory for initialized arrays
+        -:  133: */
+function clean_globals called 2 returned 100% blocks executed 100%
+        2:  134:int clean_globals(void)
+        -:  135:{ 
+        2:  136: free(CMV);
+        2:  137: free(LCM);
+        2:  138: free(PUM);
+        2:  139: free(FUV);
+        2:  140: return 0;
+        -:  141:} // end clean_globals()

@@ -100,7 +100,6 @@ boolean LIC0()
        ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
        if(ch == LT)
          return 1;
-
     }
    return 0;
 }
@@ -119,7 +118,7 @@ boolean LIC1()
 
   for( i = 0; i<NUMPOINTS-2; i++)
     {
-      //Finding slope of a line by standard formulae( Learnt in Highschool)
+      //Finding slope of a line by standard formulae(Learned in High School)
 
      a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
      b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));

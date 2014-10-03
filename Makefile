@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -O2 -ffloat-store -Wall -Wextra -Werror -std=c99
+CFLAGS= --coverage -O2 -ffloat-store -Wall -Wextra -Werror -std=c99
 DEPS = decide.h
 SRC = decide.c
 SRCt = decide.c test.c
