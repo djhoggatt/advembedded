@@ -10,10 +10,16 @@
 boolean LIC0();
 boolean LIC1();
 boolean LIC2();
+boolean LIC3();
+boolean LIC4();
+boolean LIC5();
+
 boolean all_elements_in_row_are_true(BMATRIX, int);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
 double circumcenter(double ,double ,double ,double ,double ,double );
+double angle_points(double, double, double, double ,double ,double);
+int Quadrant_point(double,double);
 
 // -- Globals -- //
 boolean LAUNCH = 0; // Default to no launch.
@@ -30,6 +36,9 @@ void DECIDE(void)
   CMV[0] = LIC0();
   CMV[1] = LIC1();
   CMV[2] = LIC2();
+  CMV[3] = LIC3();
+  CMV[4] = LIC4();
+  CMV[5] = LIC5();
 
  /*
  * Use the logical operator stored in LCM and apply to the booleans
@@ -101,6 +110,7 @@ boolean LIC0()
  * If Slope of the line formed by any 2 points eqauls that of any other combination, then the points lie on a single Line
  * If the Slope of a line formed by any two points are different, they form a Triangle
  */
+
 boolean LIC1()
 { int ch,ch1,ch2,ch3,i;
   double a,b,r;
@@ -165,21 +175,62 @@ boolean LIC1()
        else
           { //The Points form a Triangle. All Triangles are Circumscribable
             // For the 3 points to be contained,
-            // the Radius of the Cicle should be greater than or equal to the Circumradius
-             r  = circumcenter(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
-             ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS1,r);
-             if(ch1 == LT)
+            // the Radius of the Cicle should be greater than or equal to the Circumradius if triangle is acute or right.
+            // For abtuse, Radius of circle must be greater than halff the length of the longest side
+             double ang1,ang2,ang3;
+             ang1 = angle_points(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+             ang2 = angle_points(X[i],Y[i],X[i+2],Y[i+2],X[i+1],Y[i+1]);
+             ang3 = angle_points(X[i+1],Y[i+1],X[i],Y[i],X[i+2],Y[i+2]);
+             if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
+             {r  = circumcenter(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+              }
+             else
+               { if(DOUBLECOMPARE(ang1,PI/2)==GT)
+                     { r = (length_point(X[i],Y[i],X[i+2],Y[i+2]))/2;
+                     }
+                  else if(DOUBLECOMPARE(ang2,PI/2)==GT)
+                     { r = (length_point(X[i],Y[i],X[i+1],Y[i+1]))/2;
+                     }
+                  else
+                     { r = (length_point(X[i+1],Y[i+1],X[i+2],Y[i+2]))/2;
+
+                      }
+
+               }
+              ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS1,r);
+              if(ch1 == LT)
                   { return 1;}
-           }
+
     }
+  }
    return 0;
 }
 
+boolean LIC2()
+{ int i;
+ for(i=0; i<(NUMPOINTS-2); ++i)
+{  if (((DOUBLECOMPARE(X[i], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i], Y[i+1]) == EQ))||((DOUBLECOMPARE(X[i+2], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i+2], Y[i+1]) == EQ)))
+        continue;
+else
+{
+  double Angle = angle_points(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
+  if((DOUBLECOMPARE(Angle, PI - PARAMETERS.EPSILON) == LT)||(DOUBLECOMPARE(Angle, PI + PARAMETERS.EPSILON) == GT))
+  {
+   return 1;
+   // only need one so can quit checking
+  }
+
+
+ }
+}
+return 0;
+}
 /*
- * LIC[2]: There exists at least one set of three consecutive data points
+ * CMV[3]: There exists at least one set of three consecutive data points
  * that are the vertices of a triangle with area greater than AREA1.
  */
-boolean LIC2()
+
+boolean LIC3()
 { int i;
  for(i=0; i<(NUMPOINTS-2); ++i)
 {
@@ -189,7 +240,51 @@ boolean LIC2()
    return 1;
    // only need one so can quit checking
   }
-  
+
+}
+return 0;
+}
+
+boolean LIC4()
+{ int i,j,k,count,flag;
+int * quad;
+quad =(int*)calloc(PARAMETERS.Q_PTS,sizeof(int));
+ for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.Q_PTS); ++i)
+{ count = 0;
+  for(j=0;j<PARAMETERS.Q_PTS;++j)
+      { quad[j] = Quadrant_point(X[i+j],Y[i+j]);
+      }
+  for(j=0;j<PARAMETERS.Q_PTS;++j)
+    { flag = 0;
+      for (k=j+1;k<PARAMETERS.Q_PTS;++k)
+           {
+             if(quad[j] == quad[k])
+              { flag =1;
+              }
+            }
+      if(flag == 0)
+       { count ++;}
+      else
+        continue;
+        }
+if (count > PARAMETERS.QUADS)
+   {return 1;}
+
+}
+return 0;
+}
+
+
+boolean LIC5()
+{ int i;
+ for(i=0; i<(NUMPOINTS-1); ++i)
+{
+  if(DOUBLECOMPARE(X[i], X[i+1]) == GT)
+  {
+   return 1;
+   // only need one so can quit checking
+  }
+
 }
 return 0;
 }
@@ -342,3 +437,26 @@ double circumcenter(double x1,double y1,double x2,double y2,double x3,double y3)
     CRadius = (a*b*c)/(4*Area);
     return CRadius;
 }
+
+double angle_points(double x1, double y1, double x2,double y2,double x3,double y3)
+{ double cos_Angle,Angle,a,b,c;
+    a = length_point(x1,y1,x2,y2);
+    b = length_point(x3,y3,x2,y2);
+    c = length_point(x1,y1,x3,y3);
+
+/* By law of cosines c^2 = a^2 + b^2 - 2abcos(angle theta)  */
+
+   cos_Angle = (((a*a)+(b*b)-(c*c))/(2*a*b));
+   Angle = acos(cos_Angle);
+   return Angle;
+}
+
+int Quadrant_point(double x,double y)
+{ if((x>=0)&&(y>=0))
+    {return 1;}
+    else if((x<0)&&(y>=0))
+    {return 2;}
+    else if((x<=0)&&(y<0))
+    {return 3;}
+    return 4;
+    }
