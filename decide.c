@@ -10,10 +10,16 @@
 boolean LIC0();
 boolean LIC1();
 boolean LIC2();
+boolean LIC3();
+boolean LIC4();
+boolean LIC5();
+
 boolean all_elements_in_row_are_true(BMATRIX, int);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
 double circumcenter(double ,double ,double ,double ,double ,double );
+double angle_points(double, double, double, double ,double ,double);
+int Quadrant_point(double,double);
 
 // -- Globals -- //
 boolean LAUNCH = 0; // Default to no launch.
@@ -30,6 +36,9 @@ void DECIDE(void)
   CMV[0] = LIC0();
   CMV[1] = LIC1();
   CMV[2] = LIC2();
+  CMV[3] = LIC3();
+  CMV[4] = LIC4();
+  CMV[5] = LIC5();
 
  /*
  * Use the logical operator stored in LCM and apply to the booleans
