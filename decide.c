@@ -246,8 +246,7 @@ boolean LIC3()
 return 0;
 }
 
-boolean LIC4() {return 0;}  // commented out for now until bug is found
-
+boolean LIC4() // commented out for now until bug is found
 { int i,j,k,count,flag;
 int quad[100];
  for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.Q_PTS); ++i)
