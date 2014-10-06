@@ -16,15 +16,15 @@
 #define FALSE 0
 #define TRUE 1
 
-int derot13(char c)
+int rot13(char c)
 {
   if('a' <= c && c <= 'z')
   {
-    return (((c - 'a') - 13) % 26) + 'a';
+    return (((c - 'a') + 13) % 26) + 'a';
   } 
   else if ('A' <= c && c <= 'Z') 
   {
-    return (((c - 'A') - 13) % 26) + 'A';
+    return (((c - 'A') + 13) % 26) + 'A';
   } 
   else 
   {
@@ -37,7 +37,7 @@ main()
     //Initialize Values
     int fd, c, res, i;
     struct termios oldtio, newtio;
-    char * in;
+    char in;
 
     // Load the pin configuration
     int ret = system("echo uart1 > /sys/devices/bone_capemgr.9/slots");
@@ -75,25 +75,13 @@ main()
     //Enter main while loop
     while (TRUE) {
 	//Read the input from the UART
-	//Note, that the read blocks until a newline character is read.
-	read(fd, in , sizeof(*in));
-
+	read(fd, &in, 1);
+	
 	//Delay for a little bit
 	for(i = 0; i < 3000000; i++);
 
 	//Echo input back over UART
-	write(fd, in, sizeof(*in));
-
-	/*
-	int i;
-	char * s;
-	scanf("%s", s);
-	for(i = 0; i < sizeof(*s); i++)
-	{
-		//We might need to use this approach
-	}
-        write(fd, *s, sizeof(*s));
-	for(i = 0; i < 3000000; i++);*/
+	write(fd, &in, 1);
     }
 
     //restore old port settings
@@ -102,5 +90,3 @@ main()
     //Close the device
     close (fd);
 }
-
-
