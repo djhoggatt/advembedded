@@ -120,7 +120,6 @@ boolean LIC0()
 * If Slope of the line formed by any 2 points equals that of any other combination, then the points lie on a single Line
 * If the Slope of a line formed by any two points are different, they form a Triangle
 */
-
 boolean LIC1()
 { int ch,ch1,ch2,ch3,i;
 	double a,b,r;
@@ -319,11 +318,163 @@ boolean LIC5()
 	return 0;
 }
 
+/* There exists at least one set of three data points, separated by exactly A_PTS and B_PTS consecutive intervening
+ * points, respectively, that cannot be contained within or on a circle of radius RADIUS1. In addition, there exists
+ * at least one set of three data points (which can be the same or different from the three data points just mentioned)
+ * separated by exactly A PTS and B PTS consecutive intervening points, respectively, that can be contained in or
+ * on a circle of radius RADIUS2. Both parts must be true for the LIC to be true. The condition is not met when
+ * NUMPOINTS < 5, 0 <= RADIUS2
+*/
+boolean LIC13()
+{
+	boolean cond_1;
+	boolean cond_2;
+	int ch,ch1,ch2,ch3,i;
+	double a,b,r;
+	
+	if(NUMPOINTS < 5 || PARAMETERS.RADIUS2 <= 0)
+	{
+		return 0;
+	}
+		
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.A_PTS + PARAMETERS.B_PTS)); i++)
+	{
+		//Finding slope of a line by standard formula (Learned in High School)
+
+		a = ((Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS] - Y[i+PARAMETERS.A_PTS])/(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS] - X[i+PARAMETERS.A_PTS]));
+		b = ((Y[i] - Y[i+PARAMETERS.A_PTS])/(X[i] - X[i+PARAMETERS.A_PTS]));
+		//Compares Slopes to decide if line or Triangle
+		ch=  DOUBLECOMPARE(a,b);
+		if(ch == EQ)
+		{
+			// Decides that it is a Line So compute the greatest separation between the points to find length of the line
+			a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+			b = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+			r = length_point(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS2],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+			//Compares 2 Lengths
+			ch1 = DOUBLECOMPARE(a,b);
+			if (ch1 == GT)
+			{
+				ch2 = DOUBLECOMPARE(a,r);
+				if(ch2 == GT)
+				{
+					//For a Circle to be Able to encompass the 3 points,
+					// Radius of circle must be greater than or equal to half the length of the Line
+					ch3 = DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1);
+					if (ch3 == GT)
+					{
+						cond_1 = 1;
+					}
+					ch3 = DOUBLECOMPARE((a/2),PARAMETERS.RADIUS2);
+					if(ch3 < GT)
+					{
+						cond_2 = 1;
+					}
+				}
+				else
+				{
+					//For a Circle to be Able to encompass the 3 points,
+					// Radius of circle must be greater than or equal to half the length of the Line
+					ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+					if (ch3 == GT)
+					{
+						cond_1 = 1;
+					}
+					ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS2);
+					if(ch3 < GT)
+					{
+						cond_2 = 1;
+					}
+				}
+			}
+			else
+			{
+				//Compares the greater of the 2 with the third
+				ch2 = DOUBLECOMPARE(b,r);
+				if(ch2 == GT)
+				{
+					//For a Circle to be Able to encompass the 3 points,
+					// Radius of circle must be greater than or equal to half the length of the Line
+					ch3 = DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1);
+					if (ch3 == GT)
+					{
+						cond_1 = 1;
+					}
+					ch3 = DOUBLECOMPARE((b/2),PARAMETERS.RADIUS2);
+					if (ch3 < GT)
+					{
+						cond_2 = 1;
+					}
+				}
+				else
+				{
+					//For a Circle to be Able to encompass the 3 points,
+					// Radius of circle must be greater than or equal to half the length of the Line
+					ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+					if (ch3 == GT)
+					{
+						cond_1 = 1;
+					}
+					ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS2);
+					if (ch3 < GT)
+					{
+						cond_2 = 1;
+					}
+				}
+			}
+		}
+		else
+		{
+			//The Points form a Triangle. All Triangles are Circumscribable
+			// For the 3 points to be contained,
+			// the Radius of the Circle should be greater than or equal to the Circumradius if triangle is acute or right.
+			// For obtuse, Radius of circle must be greater than halff the length of the longest side
+			double ang1,ang2,ang3;
+			ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+			ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+			ang3 = angle_points(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+			if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
+			{
+				r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+			}
+			else
+			{
+				if(DOUBLECOMPARE(ang1,PI/2)==GT)
+				{
+					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]))/2;
+				}
+				else if(DOUBLECOMPARE(ang2,PI/2)==GT)
+				{
+					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]))/2;
+				}
+				else
+				{
+					r = (length_point(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]))/2;
+				}
+
+			}
+			ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS1,r);
+			if(ch1 == LT)
+			{
+				cond_1 = 1;
+			}
+			ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS2,r);
+			if(ch1 > LT)
+			{
+				cond_2 = 1;
+			}
+
+		}
+	}
+		
+	return (cond_1 & cond_2);
+}
+
 /* There exists at least one set of three data points, separated by exactly E_PTS and F_PTS consecutive intervening
  * points, respectively, that are the vertices of a triangle with area greater than AREA1. In addition, there exist three
  * data points (which can be the same or different from the three data points just mentioned) separated by exactly
  * E PTS and F PTS consecutive intervening points, respectively, that are the vertices of a triangle with area less
- * than AREA2. Both parts must be true for the LIC to be true. The condition is not met when NUMPOINTS <= 5.
+ * than AREA2. Both parts must be true for the LIC to be true. The condition is not met when NUMPOINTS < 5.
  * 0 <= AREA2
  */
 boolean LIC14()
@@ -331,13 +482,13 @@ boolean LIC14()
 	boolean cond_1;
 	boolean cond_2;
 	double area;
-	if(NUMPOINTS < 6 || PARAMETERS.AREA2 <= 0)
+	if(NUMPOINTS < 5 || PARAMETERS.AREA2 <= 0)
 	{
 		return 0;
 	}
 	
 	int i;
-	for(i = 0; i < (NUMPOINTS - (PARAMETERS.E_PTS + PARAMETERS.F_PTS); i++)
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.E_PTS + PARAMETERS.F_PTS)); i++)
 	{
 		area = Calculate_Area_Triangle(X[i], Y[i], X[i+PARAMETERS.E_PTS], Y[i+PARAMETERS.E_PTS], X[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS], Y[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS]);
 		if(DOUBLECOMPARE(area, PARAMETERS.AREA1) == GT)
