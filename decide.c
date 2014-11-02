@@ -303,7 +303,6 @@ boolean LIC4() // commented out for now until bug is found
 	return 0;
 }
 
-
 boolean LIC5()
 { int i;
 	for(i=0; i<(NUMPOINTS-1); ++i)
@@ -316,6 +315,28 @@ boolean LIC5()
 
 	}
 	return 0;
+}
+
+/* There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), separated by exactly G_PTS consecutive
+ * intervening points, such that X[j] - X[i] < 0. (where i < j ) The condition is not met when NUMPOINTS < 3.
+ * 1 <= G PTS <= NUMPOINTS-2
+ */
+boolean LIC11()
+{
+	int i;
+	
+	if(NUMPOINTS < 3)
+	{
+		return 0;
+	}
+	
+	for(i=0; i < (NUMPOINTS - PARAMETERS.G_PTS); i++)
+	{
+		if(DOUBLECOMPARE(X[i], X[i+PARAMETERS.G_PTS]) == GT)
+		{
+			return 1;
+		}
+	}
 }
 
 /* There exists at least one set of two data points, separated by exactly K_PTS consecutive intervening points,
@@ -331,7 +352,7 @@ boolean LIC12()
 	double dist;
 	int i;
 	
-	if(NUMPOINTS < 3 || PARAMETERS.LENGTH2 <= 0)
+	if(NUMPOINTS < 3)
 	{
 		return 0;
 	}
@@ -366,7 +387,7 @@ boolean LIC13()
 	int ch,ch1,ch2,ch3,i;
 	double a,b,r;
 	
-	if(NUMPOINTS < 5 || PARAMETERS.RADIUS2 <= 0)
+	if(NUMPOINTS < 5)
 	{
 		return 0;
 	}
@@ -516,7 +537,7 @@ boolean LIC14()
 	boolean cond_1;
 	boolean cond_2;
 	double area;
-	if(NUMPOINTS < 5 || PARAMETERS.AREA2 <= 0)
+	if(NUMPOINTS < 5)
 	{
 		return 0;
 	}
