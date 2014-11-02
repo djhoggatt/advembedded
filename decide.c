@@ -318,6 +318,40 @@ boolean LIC5()
 	return 0;
 }
 
+/* There exists at least one set of two data points, separated by exactly K_PTS consecutive intervening points,
+ * which are a distance greater than the length, LENGTH1, apart. In addition, there exists at least one set of two
+ * data points (which can be the same or different from the two data points just mentioned), separated by exactly
+ * K PTS consecutive intervening points, that are a distance less than the length, LENGTH2, apart. Both parts
+ * must be true for the LIC to be true. The condition is not met when NUMPOINTS < 3, 0 <= LENGTH2
+ */
+boolean LIC12()
+{
+	boolean cond_1;
+	boolean cond_2;
+	double dist;
+	int i;
+	
+	if(NUMPOINTS < 3 || PARAMETERS.LENGTH2 <= 0)
+	{
+		return 0;
+	}
+	
+	for(i = 0; i < (NUMPOINTS-PARAMETERS.K_PTS); i++)
+	{
+		dist = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS],Y[PARAMETERS.K_PTS]);
+		if(DOUBLECOMPARE(dist, PARAMETERS.LENGTH1) == GT)
+		{
+			cond_1 = 1;
+		}
+		if(DOUBLECOMPARE(dist, PARAMETERS.LENGTH2) == LT)
+		{
+			cond_2 = 1;
+		}
+	}
+	
+	return (cond_1 & cond_2);
+}
+
 /* There exists at least one set of three data points, separated by exactly A_PTS and B_PTS consecutive intervening
  * points, respectively, that cannot be contained within or on a circle of radius RADIUS1. In addition, there exists
  * at least one set of three data points (which can be the same or different from the three data points just mentioned)
