@@ -345,7 +345,7 @@ boolean LIC6()
 		  B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
 		  C = (((-(X[i]))*A) + ((-(Y[i]))*B));
 		  for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
-		   { d = abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B)));
+		   { d = (abs( (A*X[j]) + (B*Y[j]) + C ))/(sqrt((A*A)+(B*B)));
                      ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
 		     if(ch == LT)
 			return 1;
@@ -585,6 +585,8 @@ boolean LIC11()
 			return 1;
 		}
 	}
+	
+	return 0; 
 }
 
 /* There exists at least one set of two data points, separated by exactly K_PTS consecutive intervening points,
