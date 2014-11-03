@@ -318,6 +318,48 @@ boolean LIC5()
 }
 
 /*
+ * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive intervening
+ * points, respectively, that form an angle such that:
+ * angle < (PI-EPSILON)
+ * or
+ * angle > (PI+EPSILON)
+ */
+boolean LIC9()
+{
+	//Initialization
+	int i;
+
+	//The condition is not met when NUMPOINTS < 5
+	if(NUMPOINTS < 5)
+		return 0;
+
+	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
+	//designated by C_PTS. Take that point, and determine the next point as seperated by the
+	//number of points designated by D_PTS.
+	for(i = 0; i < (NUMPOINTS-(Parameters.E_PTS+Parameters.F_PTS+2)); i++)
+	{
+		//Note: the "+1" is necessary to seperate out the number of points designated by E_PTS.
+		//I.e. if C_PTS is 2, the we need to check X[0] and X[3], since there are two points
+		//in between 0 and 3.
+		int pt_one = i+Parameters.C_PTS+1;
+		int pt_two = pt_one+Parameters.D_PTS+1;
+
+		//Determine if the first or last poiint coincides with the vertex. If not, then compute the angle and compare
+		//it to EPSILON. Return true if the angle is outside of PI within the boundary as designated by EPSILON.
+		if (((DOUBLECOMPARE(X[i], X[pt_one]) == EQ)&&(DOUBLECOMPARE(Y[i], Y[pt_one]) == EQ))||((DOUBLECOMPARE(X[pt_one], X[pt_two]) == EQ)&&(DOUBLECOMPARE(Y[pt_one], Y[pt_two]) == EQ)))
+			continue;
+		else
+		{
+			double Angle = angle_points(X[i],Y[i],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
+			if((DOUBLECOMPARE(Angle, PI - PARAMETERS.EPSILON) == LT)||(DOUBLECOMPARE(Angle, PI + PARAMETERS.EPSILON) == GT))
+				return 1;
+		}
+	}
+
+	return 0;
+}
+
+/*
  * There exists at least one set of three data points separated by exactly E PTS and F PTS consecutive intervening
  * points, respectively, that are the vertices of a triangle with area greater than AREA1. The condition is not met
  * when NUMPOINTS < 5.
