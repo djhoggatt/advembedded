@@ -50,6 +50,16 @@ void DECIDE(void)
 	CMV[3] = LIC3();
 	CMV[4] = LIC4();
 	CMV[5] = LIC5();
+	CMV[6] = LIC6();
+	CMV[7] = LIC7();
+	CMV[8] = LIC8();
+	CMV[9] = LIC9();
+	CMV[10] = LIC10();
+	CMV[11] = LIC11();
+	CMV[12] = LIC12();
+	CMV[13] = LIC13();
+	CMV[14] = LIC14();
+
 
 	/*
 	* Use the logical operator stored in LCM and apply to the booleans
@@ -319,7 +329,7 @@ boolean LIC5()
 
 
 /*
- * LIC[7]: There exists at least one set of two consecutive data points
+ * LIC[7]: There exists at least one set of points K, consecutive data points apart
  * that are a distance greater than the length, LENGTH1, apart.
  */
 
@@ -328,11 +338,11 @@ boolean LIC7()
   double a;
   for( i = 0; i<NUMPOINTS-1; i++)
     {  //Finds distance between points and compares them
-    if(((i+PARAMETERS.K_PTS)>=NUMPOINTS)||(NUMPOINTS < 3))
+    if(((i+PARAMETERS.K_PTS+1)>=NUMPOINTS)||(NUMPOINTS < 3))
      { return 0;
       }
  else {
-       a = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS],Y[i+PARAMETERS.K_PTS]);
+       a = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS+1],Y[i+PARAMETERS.K_PTS+1]);
        ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
        if(ch == LT)
          return 1;
@@ -344,7 +354,7 @@ boolean LIC7()
 
 
 /*
- * LIC[8]: There exists at least one set of three consecutive data points that cannot all
+ * LIC[8]: There exists at least one set of three points, A and B consecutive data points apart that cannot all
  * be contained within or on a circle of radius RADIUS1
  * 3 points in space can form 2 basic shapes: Line or Triangle;
  * If Slope of the line formed by any 2 points eqauls that of any other combination, then the points lie on a single Line
@@ -356,23 +366,23 @@ boolean LIC8()
   double a,b,r;
 
   for( i = 0; i<NUMPOINTS-2; i++)
-    { if(((i+PARAMETERS.A_PTS)>=NUMPOINTS)||((i+PARAMETERS.A_PTS+PARAMETERS.B_PTS)>=NUMPOINTS)||(NUMPOINTS < 5))
+    { if(((i+PARAMETERS.A_PTS+1)>=NUMPOINTS)||((i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2)>=NUMPOINTS)||(NUMPOINTS < 5))
      { return 0;
       }
   else
     {
       //Finding slope of a line by standard formulae( Learnt in Highschool)
 
-     a = ((Y[i+PARAMETERS.B_PTS] - Y[i+PARAMETERS.A_PTS])/(X[i+PARAMETERS.B_PTS] - X[i+PARAMETERS.A_PTS]));
-     b = ((Y[i] - Y[i+PARAMETERS.A_PTS])/(X[i] - X[i+PARAMETERS.A_PTS]));
+     a = ((Y[i+PARAMETERS.B_PTS+1] - Y[i+PARAMETERS.A_PTS+1])/(X[i+PARAMETERS.B_PTS+1] - X[i+PARAMETERS.A_PTS+1]));
+     b = ((Y[i] - Y[i+PARAMETERS.A_PTS+1])/(X[i] - X[i+PARAMETERS.A_PTS+1]));
      //Compares Slopes to decide if line or Triangle
      ch=  DOUBLECOMPARE(a,b);
        if(ch == EQ)
           {
             // Decidesthat it is a Line So copmute the greatest seperation between the points to find length of the line
-            a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
-            b = length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
-            r = length_point(X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+            a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
+            b = length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
+            r = length_point(X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
             //Compares 2 Lengths
             ch1 = DOUBLECOMPARE(a,b);
              if (ch1 == GT)
@@ -422,21 +432,21 @@ boolean LIC8()
             // the Radius of the Cicle should be greater than or equal to the Circumradius if triangle is acute or right.
             // For abtuse, Radius of circle must be greater than halff the length of the longest side
              double ang1,ang2,ang3;
-             ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
-             ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
-             ang3 = angle_points(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+             ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
+             ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
+             ang3 = angle_points(X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
              if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
-             {r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+             {r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
               }
              else
                { if(DOUBLECOMPARE(ang1,PI/2)==GT)
-                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]))/2;
+                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]))/2;
                      }
                   else if(DOUBLECOMPARE(ang2,PI/2)==GT)
-                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]))/2;
+                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]))/2;
                      }
                   else
-                     { r = (length_point(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]))/2;
+                     { r = (length_point(X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]))/2;
 
                       }
 
