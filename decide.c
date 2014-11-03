@@ -329,13 +329,13 @@ boolean LIC5()
 
 boolean LIC6()
 {
-	int ch,i,A,B,C;
+	int ch,i,A,B,C,j,d;
         for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.N_PTS); ++i)
 	{    if((DOUBLECOMPARE(X[i],X[i + PARAMETERS.N_PTS -1]) == EQ)&&(DOUBLECOMPARE(Y[i],Y[i + PARAMETERS.N_PTS -1]) == EQ))
 		{ for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
 		  {
-                   a = length_point(X[i],Y[i],X[j],Y[j]);
-		   ch=  DOUBLECOMPARE(PARAMETERS.DIST,a);
+                   d = length_point(X[i],Y[i],X[j],Y[j]);
+		   ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
 		   if(ch == LT)
 			return 1;
 		   }
@@ -345,8 +345,8 @@ boolean LIC6()
 		  B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
 		  C = (((-(X[i]))*A) + ((-(Y[i]))*B));
 		  for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
-		   { d = (abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B)));
-                     ch=  DOUBLECOMPARE(PARAMETERS.DIST,a);
+		   { d = (abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B))));
+                     ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
 		     if(ch == LT)
 			return 1;
 
@@ -367,11 +367,11 @@ boolean LIC7()
   double a;
   for( i = 0; i<NUMPOINTS-1; i++)
     {  //Finds distance between points and compares them
-    if(((i+PARAMETERS.K_PTS+1)>=NUMPOINTS)||(NUMPOINTS < 3))
+    if(((i+PARAMETERS.K_PTS + 1)>=NUMPOINTS)||(NUMPOINTS < 3))
      { return 0;
       }
  else {
-       a = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS+1],Y[i+PARAMETERS.K_PTS+1]);
+       a = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS + 1],Y[i+PARAMETERS.K_PTS + 1]);
        ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
        if(ch == LT)
          return 1;
@@ -395,23 +395,23 @@ boolean LIC8()
   double a,b,r;
 
   for( i = 0; i<NUMPOINTS-2; i++)
-    { if(((i+PARAMETERS.A_PTS+1)>=NUMPOINTS)||((i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2)>=NUMPOINTS)||(NUMPOINTS < 5))
+    { if(((i+PARAMETERS.A_PTS + 1)>=NUMPOINTS)||((i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2)>=NUMPOINTS)||(NUMPOINTS < 5))
      { return 0;
       }
   else
     {
       //Finding slope of a line by standard formulae( Learnt in Highschool)
 
-     a = ((Y[i+PARAMETERS.B_PTS+1] - Y[i+PARAMETERS.A_PTS+1])/(X[i+PARAMETERS.B_PTS+1] - X[i+PARAMETERS.A_PTS+1]));
-     b = ((Y[i] - Y[i+PARAMETERS.A_PTS+1])/(X[i] - X[i+PARAMETERS.A_PTS+1]));
+     a = ((Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1] - Y[i+PARAMETERS.A_PTS + 1])/(X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1] - X[i + PARAMETERS.A_PTS + 1]));
+     b = ((Y[i] - Y[i+PARAMETERS.A_PTS + 1])/(X[i] - X[i+PARAMETERS.A_PTS + 1]));
      //Compares Slopes to decide if line or Triangle
      ch=  DOUBLECOMPARE(a,b);
        if(ch == EQ)
           {
             // Decidesthat it is a Line So copmute the greatest seperation between the points to find length of the line
-            a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
-            b = length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
-            r = length_point(X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
+            a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]);
+            b = length_point(X[i],Y[i],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1]);
+            r = length_point(X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS+1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]);
             //Compares 2 Lengths
             ch1 = DOUBLECOMPARE(a,b);
              if (ch1 == GT)
@@ -461,21 +461,21 @@ boolean LIC8()
             // the Radius of the Cicle should be greater than or equal to the Circumradius if triangle is acute or right.
             // For abtuse, Radius of circle must be greater than halff the length of the longest side
              double ang1,ang2,ang3;
-             ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
-             ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]);
-             ang3 = angle_points(X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
+             ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1]);
+             ang2 = angle_points(X[i],Y[i],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]);
+             ang3 = angle_points(X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i],Y[i],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1]);
              if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
-             {r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]);
+             {r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+PARAMETERS.B_PTS + 1],Y[i+PARAMETERS.B_PTS + 1]);
               }
              else
                { if(DOUBLECOMPARE(ang1,PI/2)==GT)
-                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]))/2;
+                     { r = (length_point(X[i],Y[i],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1]))/2;
                      }
                   else if(DOUBLECOMPARE(ang2,PI/2)==GT)
-                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1]))/2;
+                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]))/2;
                      }
                   else
-                     { r = (length_point(X[i+PARAMETERS.A_PTS+1],Y[i+PARAMETERS.A_PTS+1],X[i+PARAMETERS.B_PTS+1],Y[i+PARAMETERS.B_PTS+1]))/2;
+                     { r = (length_point(X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1],Y[i+ PARAMETERS.A_PTS + 1 + PARAMETERS.B_PTS + 1]))/2;
 
                       }
 
@@ -509,13 +509,13 @@ boolean LIC9()
 	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
 	//designated by C_PTS. Take that point, and determine the next point as seperated by the
 	//number of points designated by D_PTS.
-	for(i = 0; i < (NUMPOINTS-(Parameters.C_PTS+Parameters.D_PTS+2)); i++)
+	for(i = 0; i < (NUMPOINTS-(PARAMETERS.C_PTS+PARAMETERS.D_PTS + 2)); i++)
 	{
 		//Note: the "+1" is necessary to seperate out the number of points designated by C_PTS.
 		//I.e. if C_PTS is 2, the we need to check X[0] and X[3], since there are two points
 		//in between 0 and 3.
-		int pt_one = i+Parameters.C_PTS+1;
-		int pt_two = pt_one+Parameters.D_PTS+1;
+		int pt_one = i+PARAMETERS.C_PTS+1;
+		int pt_two = pt_one+PARAMETERS.D_PTS+1;
 
 		//Determine if the first or last poiint coincides with the vertex. If not, then compute the angle and compare
 		//it to EPSILON. Return true if the angle is outside of PI within the boundary as designated by EPSILON.
@@ -550,13 +550,13 @@ boolean LIC10()
 	//designated by E_PTS. Take that point, and determine the next point as seperated by the
 	//number of points designated by F_PTS. Compute the area of the triangle using these three
 	//points, and if it is greater than AREA1, then return true. Do this for all points.
-	for(i = 0; i < (NUMPOINTS-(Parameters.E_PTS+Parameters.F_PTS+2)); i++)
+	for(i = 0; i < (NUMPOINTS-(PARAMETERS.E_PTS+PARAMETERS.F_PTS+2)); i++)
 	{
 		//Note: the "+1" is necessary to seperate out the number of points designated by E_PTS.
 		//I.e. if E_PTS is 2, the we need to check X[0] and X[3], since there are two points
 		//in between 0 and 3.
-		int pt_one = i+Parameters.E_PTS+1;
-		int pt_two = pt_one+Parameters.F_PTS+1;
+		int pt_one = i+PARAMETERS.E_PTS+1;
+		int pt_two = pt_one+PARAMETERS.F_PTS+1;
 		double triangle_area = Calculate_Area_Triangle(X[i],Y[j],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
 		if(DOUBLECOMPARE(triangle_area, PARAMETERS.AREA1) == GT)
 			return 1;
@@ -578,9 +578,9 @@ boolean LIC11()
 		return 0;
 	}
 	
-	for(i=0; i < (NUMPOINTS - PARAMETERS.G_PTS); i++)
+	for(i=0; i < (NUMPOINTS - (PARAMETERS.G_PTS + 1); i++)
 	{
-		if(DOUBLECOMPARE(X[i], X[i+PARAMETERS.G_PTS]) == GT)
+		if(DOUBLECOMPARE(X[i], X[i+PARAMETERS.G_PTS + 1]) == GT)
 		{
 			return 1;
 		}
@@ -605,9 +605,9 @@ boolean LIC12()
 		return 0;
 	}
 	
-	for(i = 0; i < (NUMPOINTS-PARAMETERS.K_PTS); i++)
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.K_PTS + 1); i++)
 	{
-		dist = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS],Y[PARAMETERS.K_PTS]);
+		dist = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS + 1],Y[i+PARAMETERS.K_PTS + 1]);
 		if(DOUBLECOMPARE(dist, PARAMETERS.LENGTH1) == GT)
 		{
 			cond_1 = 1;
@@ -640,20 +640,20 @@ boolean LIC13()
 		return 0;
 	}
 		
-	for(i = 0; i < (NUMPOINTS - (PARAMETERS.A_PTS + PARAMETERS.B_PTS)); i++)
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.A_PTS + PARAMETERS.B_PTS + 2)); i++)
 	{
 		//Finding slope of a line by standard formula (Learned in High School)
 
-		a = ((Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS] - Y[i+PARAMETERS.A_PTS])/(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS] - X[i+PARAMETERS.A_PTS]));
-		b = ((Y[i] - Y[i+PARAMETERS.A_PTS])/(X[i] - X[i+PARAMETERS.A_PTS]));
+		a = ((Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2] - Y[i+PARAMETERS.A_PTS + 1])/(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2] - X[i+PARAMETERS.A_PTS]));
+		b = ((Y[i] - Y[i+PARAMETERS.A_PTS + 1 ])/(X[i] - X[i+PARAMETERS.A_PTS + 1]));
 		//Compares Slopes to decide if line or Triangle
 		ch=  DOUBLECOMPARE(a,b);
 		if(ch == EQ)
 		{
 			// Decides that it is a Line So compute the greatest separation between the points to find length of the line
-			a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
-			b = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
-			r = length_point(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS2],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+			a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]);
+			b = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]);
+			r = length_point(X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],X[i+PARAMETERS.A_PTS + 2],Y[i+PARAMETERS.A_PTS + 2]);
 			//Compares 2 Lengths
 			ch1 = DOUBLECOMPARE(a,b);
 			if (ch1 == GT)
@@ -733,26 +733,26 @@ boolean LIC13()
 			// the Radius of the Circle should be greater than or equal to the Circumradius if triangle is acute or right.
 			// For obtuse, Radius of circle must be greater than halff the length of the longest side
 			double ang1,ang2,ang3;
-			ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
-			ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
-			ang3 = angle_points(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+			ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]);
+			ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]);
+			ang3 = angle_points(X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]);
 			if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
 			{
-				r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]);
+				r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]);
 			}
 			else
 			{
 				if(DOUBLECOMPARE(ang1,PI/2)==GT)
 				{
-					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]))/2;
+					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2 ],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]))/2;
 				}
 				else if(DOUBLECOMPARE(ang2,PI/2)==GT)
 				{
-					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]))/2;
+					r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1]))/2;
 				}
 				else
 				{
-					r = (length_point(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS]))/2;
+					r = (length_point(X[i+PARAMETERS.A_PTS + 1],Y[i+PARAMETERS.A_PTS + 1],X[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2],Y[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS + 2]))/2;
 				}
 
 			}
@@ -791,9 +791,9 @@ boolean LIC14()
 	}
 	
 	int i;
-	for(i = 0; i < (NUMPOINTS - (PARAMETERS.E_PTS + PARAMETERS.F_PTS)); i++)
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.E_PTS + PARAMETERS.F_PTS + 2)); i++)
 	{
-		area = Calculate_Area_Triangle(X[i], Y[i], X[i+PARAMETERS.E_PTS], Y[i+PARAMETERS.E_PTS], X[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS], Y[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS]);
+		area = Calculate_Area_Triangle(X[i], Y[i], X[i+PARAMETERS.E_PTS + 1], Y[i+PARAMETERS.E_PTS + 1], X[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS + 2], Y[i+PARAMETERS.E_PTS+PARAMETERS.F_PTS + 2]);
 		if(DOUBLECOMPARE(area, PARAMETERS.AREA1) == GT)
 		{
 			cond_1 = 1;
