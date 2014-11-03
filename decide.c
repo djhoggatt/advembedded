@@ -317,121 +317,138 @@ boolean LIC5()
 	return 0;
 }
 
+
 /*
- * There exists at least one set of three data points separated by exactly A PTS and B PTS consecutive intervening
- * points, respectively, that cannot be contained within or on a circle of radius RADIUS1. The condition is not
- * met when NUMPOINTS < 5.
+ * LIC[7]: There exists at least one set of two consecutive data points
+ * that are a distance greater than the length, LENGTH1, apart.
  */
+
+boolean LIC7()
+{ int ch,i;
+  double a;
+  for( i = 0; i<NUMPOINTS-1; i++)
+    {  //Finds distance between points and compares them
+    if(((i+PARAMETERS.K_PTS)>=NUMPOINTS)||(NUMPOINTS < 3))
+     { return 0;
+      }
+ else {
+       a = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS],Y[i+PARAMETERS.K_PTS]);
+       ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
+       if(ch == LT)
+         return 1;
+
+      }
+    }
+   return 0;
+}
+
+
+/*
+ * LIC[8]: There exists at least one set of three consecutive data points that cannot all
+ * be contained within or on a circle of radius RADIUS1
+ * 3 points in space can form 2 basic shapes: Line or Triangle;
+ * If Slope of the line formed by any 2 points eqauls that of any other combination, then the points lie on a single Line
+ * If the Slope of a line formed by any two points are different, they form a Triangle
+ */
+
 boolean LIC8()
-{
-	//Initialization
-	int ang1, ang2, ang3, i;
-	double a, b, r;
+{ int ch,ch1,ch2,ch3,i;
+  double a,b,r;
 
-	//The condition is not met when NUMPOINTS < 5
-	if(NUMPOINTS < 5)
-		return 0;
+  for( i = 0; i<NUMPOINTS-2; i++)
+    { if(((i+PARAMETERS.A_PTS)>=NUMPOINTS)||((i+PARAMETERS.A_PTS+PARAMETERS.B_PTS)>=NUMPOINTS)||(NUMPOINTS < 5))
+     { return 0;
+      }
+  else
+    {
+      //Finding slope of a line by standard formulae( Learnt in Highschool)
 
-	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
-	//designated by A_PTS. Take that point, and determine the next point as seperated by the
-	//number of points designated by B_PTS.
-	for(i = 0; i < (NUMPOINTS-(Parameters.A_PTS+Parameters.B_PTS+2)); i++)
-	{
-		//Note: the "+1" is necessary to seperate out the number of points designated by A_PTS.
-		//I.e. if A_PTS is 2, the we need to check X[0] and X[3], since there are two points
-		//in between 0 and 3.
-		int pt_one = i+Parameters.A_PTS+1;
-		int pt_two = pt_one+Parameters.B_PTS+1;
+     a = ((Y[i+PARAMETERS.B_PTS] - Y[i+PARAMETERS.A_PTS])/(X[i+PARAMETERS.B_PTS] - X[i+PARAMETERS.A_PTS]));
+     b = ((Y[i] - Y[i+PARAMETERS.A_PTS])/(X[i] - X[i+PARAMETERS.A_PTS]));
+     //Compares Slopes to decide if line or Triangle
+     ch=  DOUBLECOMPARE(a,b);
+       if(ch == EQ)
+          {
+            // Decidesthat it is a Line So copmute the greatest seperation between the points to find length of the line
+            a = length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+            b = length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+            r = length_point(X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+            //Compares 2 Lengths
+            ch1 = DOUBLECOMPARE(a,b);
+             if (ch1 == GT)
+               { //Compares the greater of the 2 with the third
+                 ch2 = DOUBLECOMPARE(a,r);
+                  if(ch2 == GT)
+                    {
+                       //For a Circle to be Able to encompass the 3 points,
+                       // Radius of circle must be greater than or equal to half the length of the Line
+                       ch3 = DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1);
+                        if (ch3 == GT)
+                          {return 1;}
+                    }
+                  else
+                      {
+                       //For a Circle to be Able to encompass the 3 points,
+                       // Radius of circle must be greater than or equal to half the length of the Line
+                       ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+                        if (ch3 == GT)
+                          {return 1;}
+                      }
+                }
+             else
+              {  //Compares the greater of the 2 with the third
+                 ch2 = DOUBLECOMPARE(b,r);
+                  if(ch2 == GT)
+                    {
+                      //For a Circle to be Able to encompass the 3 points,
+                      // Radius of circle must be greater than or equal to half the length of the Line
+                       ch3 = DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1);
+                        if (ch3 == GT)
+                          {return 1;}
+                    }
+                  else
+                      {
+                       //For a Circle to be Able to encompass the 3 points,
+                       // Radius of circle must be greater than or equal to half the length of the Line
+                       ch3 = DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1);
+                        if (ch3 == GT)
+                          {return 1;}
+                      }
+               }
+            }
+       else
+          { //The Points form a Triangle. All Triangles are Circumscribable
+            // For the 3 points to be contained,
+            // the Radius of the Cicle should be greater than or equal to the Circumradius if triangle is acute or right.
+            // For abtuse, Radius of circle must be greater than halff the length of the longest side
+             double ang1,ang2,ang3;
+             ang1 = angle_points(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+             ang2 = angle_points(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]);
+             ang3 = angle_points(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+             if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
+             {r  = circumcenter(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]);
+              }
+             else
+               { if(DOUBLECOMPARE(ang1,PI/2)==GT)
+                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]))/2;
+                     }
+                  else if(DOUBLECOMPARE(ang2,PI/2)==GT)
+                     { r = (length_point(X[i],Y[i],X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS]))/2;
+                     }
+                  else
+                     { r = (length_point(X[i+PARAMETERS.A_PTS],Y[i+PARAMETERS.A_PTS],X[i+PARAMETERS.B_PTS],Y[i+PARAMETERS.B_PTS]))/2;
 
-		//Find the slop of the line
-		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
-		b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+                      }
 
-		//Compare the slopes to decide if the points form a line or triangle
-		if(DOUBLECOMPARE(a,b) == EQ)
-		{
-			//The points form a line, so compute the greatest separation between the points to find 
-			//the length of the line.
-			a = length_point(X[i],Y[i],X[pt_one],Y[pt_one]);
-			b = length_point(X[i],Y[i],X[pt_two],Y[pt_twp]);
-			r = length_point(X[pt_two],Y[pt_two],X[pt_one],Y[pt_one]);
+               }
+              ch1 = DOUBLECOMPARE(PARAMETERS.RADIUS1,r);
+              if(ch1 == LT)
+                  { return 1;}
 
-			
-			//Compare the two lengths, and determine which is greater.
-			if(DOUBLECOMPARE(a,b) == GT)
-			{
-				//Compare the first length and the radius
-				if(DOUBLECOMPARE(a,r) == GT)
-				{
-					//The radius of the circle must be greater than or equal to half the length 
-					//of the line
-					if(DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1))
-						return 1;
-				}
-				else
-				{
-					//The radius of the circle must be greater than or equal to half the length 
-					//of the line
-					if(DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1))
-						return 1;
-				}
-			}
-			else
-			{
-				//Compare the second length and the radius
-				if(DOUBLECOMPARE(b,r) == GT)
-				{
-					//The radius of the circle must be greater than or equal to half the length 
-					//of the line
-					if(DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1))
-						return 1;
-				}
-				else
-				{
-					//The radius of the circle must be greater than or equal to half the length 
-					//of the line
-					if(DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1))
-						return 1;
-				}
-			}
-		}
-		else
-		{
-			//The points form a triangle, and all triangles are circumscribable. Thus, the radius of 
-			//the circle should be greater than or equal to the circumradius if the triangle is an acute or 
-			//right triangle. For obtuse triangles, the radius of circle must be greater than half the length 
-			//of the longest side.
-			ang1 = angle_points(X[i],Y[i],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
-			ang2 = angle_points(X[i],Y[i],X[pt_two],Y[pt_two],X[pt_one],Y[pt_one]);
-			ang3 = angle_points(X[pt_one],Y[pt_one],X[i],Y[i],X[pt_two],Y[pt_two]);
-
-			//Determine the type of triangle and value for which to compare the radius.
-			if((DOUBLECOMPARE(ang1,PI/2)<GT)&&(DOUBLECOMPARE(ang2,PI/2)<GT)&&(DOUBLECOMPARE(ang3,PI/2)<GT))
-				r = circumcenter(X[i],Y[i],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
-			else
-			{
-				if(DOUBLECOMPARE(ang1,PI/2)==GT)
-				{
-					r = (length_point(X[i],Y[i],X[pt_two],Y[pt_two]))/2;
-				}
-				else if(DOUBLECOMPARE(ang2,PI/2)==GT)
-				{
-					r = (length_point(X[i],Y[i],X[pt_one],Y[pt_one]))/2;
-				}
-				else
-				{
-					r = (length_point(X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]))/2;
-				}
-			}
-
-			//Compare the value with RADIUS1, and return 1 if necessary.
-			if(DOUBLECOMPARE(PARAMETERS.RADIUS1,r) == LT)
-				return 1;
-			
-		}
-	}
-
-	return 0;
+    }
+   }
+  }
+   return 0;
 }
 
 /*
