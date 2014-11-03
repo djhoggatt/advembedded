@@ -345,7 +345,7 @@ boolean LIC6()
 		  B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
 		  C = (((-(X[i]))*A) + ((-(Y[i]))*B));
 		  for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
-		   { d = (abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B))));
+		   { d = abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B)));
                      ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
 		     if(ch == LT)
 			return 1;
@@ -557,7 +557,7 @@ boolean LIC10()
 		//in between 0 and 3.
 		int pt_one = i+PARAMETERS.E_PTS+1;
 		int pt_two = pt_one+PARAMETERS.F_PTS+1;
-		double triangle_area = Calculate_Area_Triangle(X[i],Y[j],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
+		double triangle_area = Calculate_Area_Triangle(X[i],Y[i],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
 		if(DOUBLECOMPARE(triangle_area, PARAMETERS.AREA1) == GT)
 			return 1;
 	}
@@ -578,7 +578,7 @@ boolean LIC11()
 		return 0;
 	}
 	
-	for(i=0; i < (NUMPOINTS - (PARAMETERS.G_PTS + 1); i++)
+	for(i=0; i < (NUMPOINTS - (PARAMETERS.G_PTS + 1)); i++)
 	{
 		if(DOUBLECOMPARE(X[i], X[i+PARAMETERS.G_PTS + 1]) == GT)
 		{
@@ -605,7 +605,7 @@ boolean LIC12()
 		return 0;
 	}
 	
-	for(i = 0; i < (NUMPOINTS - (PARAMETERS.K_PTS + 1); i++)
+	for(i = 0; i < (NUMPOINTS - (PARAMETERS.K_PTS + 1)); i++)
 	{
 		dist = length_point(X[i],Y[i],X[i+PARAMETERS.K_PTS + 1],Y[i+PARAMETERS.K_PTS + 1]);
 		if(DOUBLECOMPARE(dist, PARAMETERS.LENGTH1) == GT)
