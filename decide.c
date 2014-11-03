@@ -327,6 +327,35 @@ boolean LIC5()
 	return 0;
 }
 
+boolean LIC6()
+{
+	int ch,i,A,B,C;
+        for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.N_PTS); ++i)
+	{    if((DOUBLECOMPARE(X[i],X[i + PARAMETERS.N_PTS -1]) == EQ)&&(DOUBLECOMPARE(Y[i],Y[i + PARAMETERS.N_PTS -1]) == EQ))
+		{ for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+		  {
+                   a = length_point(X[i],Y[i],X[j],Y[j]);
+		   ch=  DOUBLECOMPARE(PARAMETERS.DIST,a);
+		   if(ch == LT)
+			return 1;
+		   }
+                }
+	     else
+		{ A = ((Y[i + PARAMETERS.N_PTS -1]) - (Y[i]));
+		  B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
+		  C = (((-(X[i]))*A) + ((-(Y[i]))*B));
+		  for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+		   { d = (abs((A*X[j]) + (B*Y[j]) + C)/(sqrt((A*A)+(B*B)));
+                     ch=  DOUBLECOMPARE(PARAMETERS.DIST,a);
+		     if(ch == LT)
+			return 1;
+
+                   }
+		}
+	}
+        return 0;
+}
+
 
 /*
  * LIC[7]: There exists at least one set of points K, consecutive data points apart
