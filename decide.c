@@ -317,6 +317,39 @@ boolean LIC5()
 	return 0;
 }
 
+/*
+ * There exists at least one set of three data points separated by exactly E PTS and F PTS consecutive intervening
+ * points, respectively, that are the vertices of a triangle with area greater than AREA1. The condition is not met
+ * when NUMPOINTS < 5.
+ */
+boolean LIC10()
+{
+	//Initialization
+	int i;
+
+	//The condition is not met when NUMPOINTS < 5
+	if(NUMPOINTS < 5)
+		return 0;
+
+	//For each  point (X[i], Y[i]), determine the next point as seperated by the number of points
+	//designated by E_PTS. Take that point, and determine the next point as seperated by the
+	//number of points designated by F_PTS. Compute the area of the triangle using these three
+	//points, and if it is greater than AREA1, then return true. Do this for all points.
+	for(i = 0; i < (NUMPOINTS-(Parameters.E_PTS+Parameters.F_PTS+2)); i++)
+	{
+		//Note: the "+1" is necessary to seperate out the number of points designated by E_PTS.
+		//I.e. if E_PTS is 2, the we need to check X[0] and X[3], since there are two points
+		//in between 0 and 3.
+		int pt_one = i+Parameters.E_PTS+1;
+		int pt_two = pt_one+Parameters.F_PTS+1;
+		double triangle_area = Calculate_Area_Triangle(X[i],Y[j],X[pt_one],Y[pt_one],X[pt_two],Y[pt_two]);
+		if(DOUBLECOMPARE(triangle_area, PARAMETERS.AREA1) == GT)
+			return 1;
+	}
+
+	return 0;
+}
+
 /* There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), separated by exactly G_PTS consecutive
  * intervening points, such that X[j] - X[i] < 0. (where i < j ) The condition is not met when NUMPOINTS < 3.
  * 1 <= G PTS <= NUMPOINTS-2
