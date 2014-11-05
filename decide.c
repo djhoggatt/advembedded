@@ -416,12 +416,12 @@ boolean LIC7()
 
 	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
 	//designated by K_PTS.
-	for(i = 0; i < (NUMPOINTS-(Parameters.K_PTS+1)); i++)
+	for(i = 0; i < (NUMPOINTS-(PARAMETERS.K_PTS+1)); i++)
 	{
 		//Note: the "+1" is necessary to seperate out the number of points designated by K_PTS.
 		//I.e. if K_PTS is 2, the we need to check X[0] and X[3], since there are two points
 		//in between 0 and 3.
-		int pt_one = i+Parameters.K_PTS+1;
+		int pt_one = i+PARAMETERS.K_PTS+1;
 		
 		//Find the distance between the points and compare them
 		a = length_point(X[i],Y[i],X[pt_one],Y[pt_one]);
@@ -455,13 +455,13 @@ boolean LIC8()
 	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
 	//designated by A_PTS. Take that point, and determine the next point as seperated by the
 	//number of points designated by B_PTS.
-	for(i = 0; i < (NUMPOINTS-(Parameters.A_PTS+Parameters.B_PTS+2)); i++)
+	for(i = 0; i < (NUMPOINTS-(PARAMETERS.A_PTS+PARAMETERS.B_PTS+2)); i++)
 	{
 		//Note: the "+1" is necessary to seperate out the number of points designated by A_PTS.
 		//I.e. if A_PTS is 2, the we need to check X[0] and X[3], since there are two points
 		//in between 0 and 3.
-		int pt_one = i+Parameters.A_PTS+1;
-		int pt_two = pt_one+Parameters.B_PTS+1;
+		int pt_one = i+PARAMETERS.A_PTS+1;
+		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
 		//Find the slop of the line
 		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
@@ -473,7 +473,7 @@ boolean LIC8()
 			//The points form a line, so compute the greatest separation between the points to find
 			//the length of the line.
 			a = length_point(X[i],Y[i],X[pt_one],Y[pt_one]);
-			b = length_point(X[i],Y[i],X[pt_two],Y[pt_twp]);
+			b = length_point(X[i],Y[i],X[pt_two],Y[pt_two]);
 			r = length_point(X[pt_two],Y[pt_two],X[pt_one],Y[pt_one]);
 			
 			//Find the longest distance formed by the three points, which should correspond to the total length
@@ -730,7 +730,7 @@ boolean LIC13()
 			//The points form a line, so compute the greatest separation between the points to find
 			//the length of the line.
 			a = length_point(X[i],Y[i],X[pt_one],Y[pt_one]);
-			b = length_point(X[i],Y[i],X[pt_two],Y[pt_twp]);
+			b = length_point(X[i],Y[i],X[pt_two],Y[pt_two]);
 			r = length_point(X[pt_two],Y[pt_two],X[pt_one],Y[pt_one]);
 			
 			//Find the longest distance formed by the three points, which should correspond to the total length
@@ -743,7 +743,7 @@ boolean LIC13()
 					//of the line.
 					if (DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1) == GT)
 						cond_1 = 1;
-					if(DOUBLECOMPARE((a/2),PARAMETERS.RADIUS2 < GT)
+					if(DOUBLECOMPARE((a/2),PARAMETERS.RADIUS2) < GT)
 						cond_2 = 1;
 				}
 				else
@@ -926,7 +926,7 @@ double circumcenter(double x1,double y1,double x2,double y2,double x3,double y3)
 double angle_points(double x1, double y1, double x2,double y2,double x3,double y3)
 { 
 	//Initialization
-	double cos_Angle,,a,b,c;
+	double cos_Angle, a, b, c;
 	
 	//Calculate the distances between the points
 	a = length_point(x1,y1,x2,y2);
