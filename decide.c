@@ -331,46 +331,70 @@ boolean LIC4() // commented out for now until bug is found
 	return 0;
 }
 
+/*
+* Launch Intercept Condition 5
+* There exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such that 
+* X[j] - X[i] < 0.
+*/
 boolean LIC5()
-{ int i;
-	for(i=0; i<(NUMPOINTS-1); ++i)
+{ 
+	//Initialization
+	int i;
+	
+	//Loop through all of the points.
+	for(i = 0; i < (NUMPOINTS - 1); i++)
 	{
+		//If the difference between the next point and the current point is less than zero,
+		//return true.
 		if(DOUBLECOMPARE(X[i], X[i+1]) == GT)
-		{
 			return 1;
-			// only need one so can quit checking
-		}
 
 	}
+	
+	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
 
+/*
+* Launch Intercept Condition 6
+* There exists at least one set of N PTS consecutive data points such that at least one of the points lies a distance
+* greater than DIST from the line joining the first and last of these N PTS points. If the first and last points of these
+* N PTS are identical, then the calculated distance to compare with DIST will be the distance from the coincident
+* point to all other points of the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
+*/
 boolean LIC6()
 {
-	int ch,i,A,B,C,j,d;
-        for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.N_PTS); ++i)
-	{    if((DOUBLECOMPARE(X[i],X[i + PARAMETERS.N_PTS -1]) == EQ)&&(DOUBLECOMPARE(Y[i],Y[i + PARAMETERS.N_PTS -1]) == EQ))
-		{ for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
-		  {
-                   d = length_point(X[i],Y[i],X[j],Y[j]);
-		   ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
-		   if(ch == LT)
-			return 1;
-		   }
+	//Initialization
+	int i,A,B,C,j,d;
+	
+	//Loop through all of the points.
+        for(i = 0; i < (NUMPOINTS + 1 - PARAMETERS.N_PTS); i++)
+	{    
+		if((DOUBLECOMPARE(X[i],X[i + PARAMETERS.N_PTS -1]) == EQ) && (DOUBLECOMPARE(Y[i],Y[i + PARAMETERS.N_PTS -1]) == EQ))
+		{ 
+			for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+			{
+				d = length_point(X[i],Y[i],X[j],Y[j]);
+				if(DOUBLECOMPARE(PARAMETERS.DIST,d) == LT)
+					return 1;
+	   		}
                 }
-	     else
-		{ A = ((Y[i + PARAMETERS.N_PTS -1]) - (Y[i]));
-		  B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
-		  C = (((-(X[i]))*A) + ((-(Y[i]))*B));
-		  for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
-		   { d = (fabs( (A*X[j]) + (B*Y[j]) + C ))/(sqrt((A*A)+(B*B)));
-                     ch=  DOUBLECOMPARE(PARAMETERS.DIST,d);
-		     if(ch == LT)
-			return 1;
+                else
+		{ 
+			A = ((Y[i + PARAMETERS.N_PTS -1]) - (Y[i]));
+			B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
+			C = (((-(X[i]))*A) + ((-(Y[i]))*B));
+			for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+			{
+				d = (fabs( (A*X[j]) + (B*Y[j]) + C ))/(sqrt((A*A)+(B*B)));
+				if(DOUBLECOMPARE(PARAMETERS.DIST,d) == LT)
+					return 1;
 
                    }
 		}
 	}
+	
+	//If no points are found that satisfy the condition, return false.
         return 0;
 }
 
