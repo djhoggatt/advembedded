@@ -7,6 +7,7 @@
 #include "decide.h"
 
 // -- Forward Declarations -- //
+//LIC declaration
 boolean LIC0();
 boolean LIC1();
 boolean LIC2();
@@ -23,8 +24,7 @@ boolean LIC12();
 boolean LIC13();
 boolean LIC14();
 
-
-
+//Helper method declaration
 boolean all_elements_in_row_are_true(BMATRIX, int);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
@@ -35,15 +35,15 @@ int Quadrant_point(double,double);
 // -- Globals -- //
 boolean LAUNCH = 0; // Default to no launch.
 
-/*
-*See requirements specification document for decide() function contract.
-*/
+// -- Decide Implementation -- //
+//See the requirements specification for details regarding the decide function requirements.
 void DECIDE(void)
 {
+	//Initialization
 	int i = 0;
 	int j = 0;
 
-	// -- CMV -- //
+	//CMV Initialization
 	CMV[0] = LIC0();
 	CMV[1] = LIC1();
 	CMV[2] = LIC2();
@@ -62,69 +62,73 @@ void DECIDE(void)
 
 
 	/*
-	* Use the logical operator stored in LCM and apply to the booleans
-	* stored in the CMV. Store the result in PUM. If "NOTUSED" is found
-	* in LCM then PUM defaults to 0 (FALSE).
+	* Use the logical operators stored in the LCM and apply them to the booleans stored in the CMV. Store the 
+	* results in PUM. If the logical operator is "NOTUSED" then PUM defaults to 0 (FALSE).
 	*/
 	for(i = 0; i < 15; i++ )
 	{
 		for(j = 0; j < 15; j++ )
 		{
-			if (LCM[i][j] == ORR) { PUM[i][j] = (CMV[i] || CMV[j]); }
-			else if (LCM[i][j] == ANDD) { PUM[i][j] = (CMV[i] && CMV[j]); }
-			else PUM[i][j] = 0;
+			if (LCM[i][j] == ORR) 
+				PUM[i][j] = (CMV[i] || CMV[j]);
+			else if (LCM[i][j] == ANDD)
+				PUM[i][j] = (CMV[i] && CMV[j]);
+			else 
+				PUM[i][j] = 0;
 		}
 	}
 
 	/*
-	* FUV[i] should be set to true if PUM[i,i] is false
-	* or if all elements in PUM row i are true. (See page 6
-	* of the protocol.)
+	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or if all elements in PUM row i 
+	* are true.
 	*/
 	for( i = 0; i < 15; i++ )
 	{
-		if ((PUM[i][i] == 0) || ( all_elements_in_row_are_true(PUM,i) )){ FUV[i] = 1; }
-		else { FUV[i] = 0; }
+		if ((PUM[i][i] == 0) || ( all_elements_in_row_are_true(PUM,i) ))
+			FUV[i] = 1;
+		else
+			FUV[i] = 0;
 	}
 
 	/*
-	* Should we Launch?
-	* Check all the elements of the Final Unlocking Vector (FUV)
-	* for any FALSE entries. If there are any FALSE entries then
-	* we should not launch (LAUNCH = 0).
+	* Check all of the elements in the FUV for any false entries. If there are any false entries, then
+	* we should not launch.
 	*/
-	boolean fuv_has_false = 0;
+	LAUNCH = 0;
 	for(i = 0; i < 15; i++ )
 	{
-		if (FUV[i] == 0) { fuv_has_false = 1; }
+		if (FUV[i] == 0)
+			LAUNCH = 1;
 	}
-	if (fuv_has_false == 0) { LAUNCH = 1; }
-	else { LAUNCH = 0; }
-
-
 
 }
 
-
+// -- LIC Implementation -- //
 /*
-* CMV[0]: There exists at least one set of two consecutive data points
-* that are a distance greater than the length, LENGTH1, apart.
+* Launch Intercept Condition 0
+* There exists at least one set of two consecutive data points that are a distance greater than the length,
+* LENGTH1, apart.
 */
 boolean LIC0()
-{ int ch,i;
-	double a;
-	for( i = 0; i<NUMPOINTS-1; i++)
-	{  //Finds distance between points and compares them
-		a = length_point(X[i],Y[i],X[i+1],Y[i+1]);
-		ch=  DOUBLECOMPARE(PARAMETERS.LENGTH1,a);
-		if(ch == LT)
-		return 1;
+{ 
+	//Initialization
+	int ch,i;
+	
+	//Find the distance between all consecutive points, and compare them.
+	for ( i = 0; i < NUMPOINTS - 1; i++)
+	{  
+		//If the distance between the points is greater than LENGTH1, return true.
+		if(DOUBLECOMPARE(PARAMETERS.LENGTH1, length_point(X[i],Y[i],X[i+1],Y[i+1])))
+			return 1;
 	}
+	
+	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
 
 /*
-* LIC[1]: There exists at least one set of three consecutive data points that cannot all
+* Launch Intercept Condition 1
+* There exists at least one set of three consecutive data points that cannot all
 * be contained within or on a circle of radius RADIUS1
 * 3 points in space can form 2 basic shapes: Line or Triangle;
 * If Slope of the line formed by any 2 points equals that of any other combination, then the points lie on a single Line
