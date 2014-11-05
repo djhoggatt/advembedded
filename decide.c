@@ -119,7 +119,7 @@ boolean LIC0()
 	for ( i = 0; i < NUMPOINTS - 1; i++)
 	{  
 		//If the distance between the points is greater than LENGTH1, return true.
-		if(DOUBLECOMPARE(PARAMETERS.LENGTH1, length_point(X[i],Y[i],X[i+1],Y[i+1])))
+		if(DOUBLECOMPARE(PARAMETERS.LENGTH1, length_point(X[i],Y[i],X[i+1],Y[i+1])) == LT)
 			return 1;
 	}
 	
@@ -145,19 +145,9 @@ boolean LIC1()
 	*/
 	for( i = 0; i < NUMPOINTS - 2; i++)
 	{
-		//Determine if any of the points are the same. If all three points are the
-		//if they are, then we know that the points form a line.
-		//Otherwise, find the slop of the line
-		if ((X[i] == X[i+1]) || (X[i+1] == X[i+2]) || (X[i] == X[i+2]) || (Y[i] == Y[i+1]) || (Y[i+1] == Y[i+2]) || (Y[i] == Y[i+2]))
-		{
-			a = 0.0;
-			b = 0.0;
-		}
-		else
-		{
-			a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
-			b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
-		}
+		//Determine the slopes
+		a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
+		b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
 		
 		//Decide if the points form a line or a triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
@@ -241,75 +231,103 @@ boolean LIC1()
 	return 0;
 }
 
+/*
+* Launch Intercept Condition 2
+* There exists at least one set of three consecutive data points which form an angle such that:
+* angle < (PI - EPSILON)
+* or
+* angle > (PI + EPSILON)
+* The second of the three consecutive points is always the vertex of the angle. If either the first point or the last
+* point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
+*/
 boolean LIC2()
 { 
+	//Initialization
 	int i;
-	for(i=0; i<(NUMPOINTS-2); ++i)
+	
+	//Loop through all of the points.
+	for(i = 0; i < (NUMPOINTS-2); i++)
 	{  
+		//Determine if the first or last poiint coincides with the vertex. If not, then compute the angle and compare
+		//it to EPSILON. Return true if the angle is outside of PI within the boundary as designated by EPSILON.
 		if (((DOUBLECOMPARE(X[i], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i], Y[i+1]) == EQ))||((DOUBLECOMPARE(X[i+2], X[i+1]) == EQ)&&(DOUBLECOMPARE(Y[i+2], Y[i+1]) == EQ)))
-		continue;
+			continue;
 		else
 		{
 			double Angle = angle_points(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
 			if((DOUBLECOMPARE(Angle, PI - PARAMETERS.EPSILON) == LT)||(DOUBLECOMPARE(Angle, PI + PARAMETERS.EPSILON) == GT))
-			{
 				return 1;
-				// only need one so can quit checking
-			}
 		}
 	}
+	
+	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
-/*
-* CMV[3]: There exists at least one set of three consecutive data points
-* that are the vertices of a triangle with area greater than AREA1.
-*/
 
+
+/*
+* Launch Intercept Condition 3
+* There exists at least one set of three consecutive data points that are the vertices of a
+* triangle with area greater than AREA1.
+*/
 boolean LIC3()
 { 
+	//Initialization
 	int i;
-	for(i=0; i<(NUMPOINTS-2); ++i)
+	
+	//Loop through all of the points.
+	for(i=0; i < (NUMPOINTS - 2); i++)
 	{
 		double triangle_area = Calculate_Area_Triangle(X[i],Y[i],X[i+1],Y[i+1],X[i+2],Y[i+2]);
 		if(DOUBLECOMPARE(triangle_area, PARAMETERS.AREA1) == GT)
-		{
 			return 1;
-			// only need one so can quit checking
-		}
 	}
+	
+	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
 
+/*
+* Launch Intercept Condition 4
+* There exists at least one set of Q PTS consecutive data points that lie in more than QUADS quadrants. Where
+* there is ambiguity as to which quadrant contains a given point, priority of decision will be by quadrant number,
+* i.e., I, II, III, IV. For example, the data point (0,0) is in quadrant I, the point (-l,0) is in quadrant II, the 
+* point (0,-l) is in quadrant III, the point (0,1) is in quadrant I and the point (1,0) is in quadrant I.
+*/
 boolean LIC4() // commented out for now until bug is found
 { 
-	int i,j,k,count,flag;
-	int quad[100];
-	for(i=0; i<(NUMPOINTS + 1 - PARAMETERS.Q_PTS); ++i)
+	//Initialization
+	int i, j, k, count, flag;
+	int quad[PARAMETERS.Q_PTS];
+	
+	//Loop through all of the points.
+	for(i = 0; i < (NUMPOINTS + 1 - PARAMETERS.Q_PTS); i++)
 	{ 
-		count = 0;
-		for(j=0;j<PARAMETERS.Q_PTS;++j)
-		{ 
+		//For all consecutive Q_PTS, determine which quadrant they are in.
+		for(j = 0; j < PARAMETERS.Q_PTS; j++)
 			quad[j] = Quadrant_point(X[i+j],Y[i+j]);
-		}
-		for(j=0;j<PARAMETERS.Q_PTS;++j)
+		
+		//Determine how many qudrants are different, and increment the count if they are.
+		count = 0;
+		for(j = 0; j < PARAMETERS.Q_PTS; j++)
 		{ 
 			flag = 0;
-			for (k=j+1;k<PARAMETERS.Q_PTS;++k)
+			for (k = (j+1); k < PARAMETERS.Q_PTS; k++)
 			{
 				if(quad[j] == quad[k])
-				{ 
-					flag =1;
-				}
+					flag = 1;
 			}
 			if(flag == 0)
-			{ count ++;}
-			else
-			continue;
+				count++;
 		}
+		
+		//If the total number of points that lie in different qudrants is greater than QUADS,
+		//then return true.
 		if (count > PARAMETERS.QUADS)
-		{return 1;}
-
+			return 1;
 	}
+	
+	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
 
