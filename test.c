@@ -8,16 +8,23 @@
 #include <stdlib.h>
 #include "decide.h"
 #include "limits.h"
+#include <time.h>
+
+const  int NANO_TO_SEC = 1000000000;
 
 // -- Forward Declarations -- //
 int initialize_globals(void);
 int clean_globals(void);
 
+struct timespec start_time;
+struct timespec end_time;
 
 int main()
 {
+	double run_time;
 	initialize_globals();
-
+	FILE *fp;
+	fp = fopen("cdf.txt", "w");
 
 	// -- LIC0 Tests -- //
 
@@ -28,7 +35,37 @@ int main()
 	X[1] = 0;
 	Y[1] = 0;
 	boolean test_passed = 1;
+	int i;
 
+	//timing harness
+
+	X[0] = 2.5238;
+	X[1] = -8.32321;
+	X[2] = 0;
+	X[3] = 123.321;
+	X[4] = -38291.133235;
+	X[5] = 8381.382015;
+	X[6] = 1.0001;
+
+	Y[0] = -9913893.1355;
+	Y[1] = 1;
+	Y[2] = 123252.235;
+	Y[3] = -6346.2;
+	Y[4] = -3.3;
+	Y[5] = 0;
+	Y[6] = 5323821;
+
+	for(i = 0; i < 1000000; i++)
+	{
+		clock_gettime(CLOCK_MONOTONIC, &start_time);
+		DECIDE();
+		clock_gettime(CLOCK_MONOTONIC, &end_time);
+		
+		run_time = (end_time.tv_sec - start_time.tv_sec) + ((double)(end_time.tv_nsec - start_time.tv_nsec)/NANO_TO_SEC);
+		
+		fprintf(fp, "%lf\n", run_time);
+	}
+	fclose(fp);
 // 	PARAMETERS.LENGTH1 = 1,000,000;  // max according to func. req #3
 // 	while ( PARAMETERS.LENGTH1 > 0 )
 // 	{
@@ -50,6 +87,7 @@ int main()
 	
 	// LIC1 Tests
 	/* all should return true except for the last one */
+	
 	test_passed = 1;
 	
 	/* makes perfect line, radius would need to be 212.132*/
@@ -183,6 +221,7 @@ int main()
 
 	
 	printf("LIC1-Test1 %s\n", (test_passed ==1) ? "PASSED": "FAILED");
+
 	clean_globals();
 
 	return 0;
@@ -197,26 +236,27 @@ int main()
 */
 int initialize_globals(void)
 {
+	int i, j;
 	// Initialize CMV: 1x15 boolean
 	CMV = malloc( sizeof(boolean)*15 );
-	for(int i=0; i<15 ; i++) { CMV[i] = 0; }  // all false
+	for( i=0; i<15 ; i++) { CMV[i] = 0; }  // all false
 	
 	// Initialize LCM: 15x15 ANDD, ORR, NOTUSED
 	LCM = (CONNECTORS**) malloc(15*sizeof(CONNECTORS*));
-	for(int i=0; i<15 ; i++) { LCM[i] = (CONNECTORS*)malloc(15*sizeof(CONNECTORS)); }
+	for(i=0; i<15 ; i++) { LCM[i] = (CONNECTORS*)malloc(15*sizeof(CONNECTORS)); }
 	
-	for(int i=0; i<15; i++)
+	for(i=0; i<15; i++)
 	{
-		for(int j=0; j<15; j++) { LCM[i][j] = NOTUSED; }
+		for(j=0; j<15; j++) { LCM[i][j] = NOTUSED; }
 	}
 	
 	// Initialize PUM: 15x15 boolean
 	PUM = (boolean**) malloc(15*sizeof(boolean*));
-	for(int i=0; i<15 ; i++) { PUM[i] = (boolean*)malloc(15*sizeof(boolean)); }
+	for(i=0; i<15 ; i++) { PUM[i] = (boolean*)malloc(15*sizeof(boolean)); }
 	
-	for(int i=0; i<15; i++)
+	for(i=0; i<15; i++)
 	{
-		for(int j=0; j<15; j++)
+		for(j=0; j<15; j++)
 		{
 			if(i==j)
 			PUM[i][j]=1;  // diagonals = true
@@ -226,7 +266,7 @@ int initialize_globals(void)
 	}
 	// Initialize FUV: 1x15 boolean
 	FUV = malloc( sizeof(boolean)*15 );
-	for(int i=0; i<15; i++) { FUV[i] = 0; }  // all false
+	for(i=0; i<15; i++) { FUV[i] = 0; }  // all false
 	
 	// Initialize Parameters Struct with Any Numbers
 	PARAMETERS.LENGTH1 = 816064.687;    // Length in LICs 0, 7, 12
@@ -236,27 +276,27 @@ int initialize_globals(void)
 	PARAMETERS.Q_PTS   = 5;             // No. of consecutive points in LIC 4
 	PARAMETERS.QUADS   = 2;             // No. of quadrants in LIC 4
 	PARAMETERS.DIST    = 554724.335;    // Distance in LIC 6
-	PARAMETERS.N_PTS   = 4;             // No. of consecutive pts. in LIC 6
+	PARAMETERS.N_PTS   = 2;             // No. of consecutive pts. in LIC 6
 	PARAMETERS.K_PTS   = 4;             // No. of int. pts. in LICs 7, 12
-	PARAMETERS.A_PTS   = 4;             // No. of int. pts. in LICs 8, 13
-	PARAMETERS.B_PTS   = 4;             // No. of int. pts. in LICs 8, 13
+	PARAMETERS.A_PTS   = 3;             // No. of int. pts. in LICs 8, 13
+	PARAMETERS.B_PTS   = 1;             // No. of int. pts. in LICs 8, 13
 	PARAMETERS.C_PTS   = 4;             // No. of int. pts. in LIC 9
-	PARAMETERS.D_PTS   = 4;             // No. of int. pts. in LIC 9
-	PARAMETERS.E_PTS   = 4;             // No. of int. pts. in LICs 10, 14
-	PARAMETERS.F_PTS   = 4;             // No. of int. pts. in LICs 10, 14
-	PARAMETERS.G_PTS   = 4;             // No. of int. pts. in LIC 11
+	PARAMETERS.D_PTS   = 1;             // No. of int. pts. in LIC 9
+	PARAMETERS.E_PTS   = 1;             // No. of int. pts. in LICs 10, 14
+	PARAMETERS.F_PTS   = 3;             // No. of int. pts. in LICs 10, 14
+	PARAMETERS.G_PTS   = 2;             // No. of int. pts. in LIC 11
 	PARAMETERS.LENGTH2 = 507202.792;    // Maximum length in LIC 12
 	PARAMETERS.RADIUS2 = 559839.0403;   // Maximum radius in LIC 13
 	PARAMETERS.AREA2   = 650689.2825;   // Maximum area in LIC 14
 	
 	// Number of Points
-	NUMPOINTS = 3;
+	NUMPOINTS = 7;
 	//NUMPOINTS = 100;
 	
 	// X and Y initialize to 0
 	X = malloc(sizeof(double)*NUMPOINTS);
 	Y = malloc(sizeof(double)*NUMPOINTS);
-	for(int i=0; i<NUMPOINTS; i++)
+	for(i=0; i<NUMPOINTS; i++)
 	{
 		X[i] = 0;
 		Y[i] = 0;
@@ -276,3 +316,4 @@ int clean_globals(void)
 	free(FUV);
 	return 0;
 } // end clean_globals()
+
