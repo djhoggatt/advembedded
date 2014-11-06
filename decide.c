@@ -878,7 +878,6 @@ boolean all_elements_in_row_are_true(BMATRIX two_by_two_matrix, int row)
 { 
 	//Initialization
 	int column;
-	boolean all_elements_are_true = 1;
 	
 	// Loop through each element in the row
 	for(column = 0; column < 15; column++)
@@ -887,6 +886,7 @@ boolean all_elements_in_row_are_true(BMATRIX two_by_two_matrix, int row)
 		if (two_by_two_matrix[row][column] == 0)
 			return 0;
 	}
+	return 1;
 }
 
 
