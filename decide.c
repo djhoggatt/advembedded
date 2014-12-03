@@ -7,8 +7,7 @@
 #include "decide.h"
 #include <math.h>
 
-// -- Forward Declarations -- //
-//LIC declaration
+// -- LIC Declarations -- //
 boolean LIC0();
 boolean LIC1();
 boolean LIC2();
@@ -25,7 +24,7 @@ boolean LIC12();
 boolean LIC13();
 boolean LIC14();
 
-//Helper function declaration
+// -- Helper function declarations -- //
 boolean all_elements_in_row_are_true(BMATRIX, int);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
@@ -37,7 +36,7 @@ int Quadrant_point(double,double);
 boolean LAUNCH = 0; // Default to no launch.
 
 // -- Decide Implementation -- //
-//See the requirements specification for details regarding the decide function requirements.
+// See the requirements specification for details regarding the decide function requirements.
 void DECIDE(void)
 {
 	//Initialization
@@ -61,12 +60,12 @@ void DECIDE(void)
 	CMV[13] = LIC13();
 	CMV[14] = LIC14();
 
-
 	/*
-	* Use the logical operators stored in the LCM and apply them to the booleans stored in the CMV. Store the 
-	* results in PUM. If the logical operator is "NOTUSED" then PUM defaults to 0 (FALSE).
+	* Use the logical operators stored in the LCM and apply them to the booleans stored 
+	* in the CMV. Store the results in PUM. If the logical operator is "NOTUSED" then PUM
+	* defaults to 0 (FALSE).
 	*/
-	for(i = 0; i < 15; i++ )
+	for( i = 0; i < 15; i++ )
 	{
 		for(j = 0; j < 15; j++ )
 		{
@@ -80,10 +79,10 @@ void DECIDE(void)
 	}
 
 	/*
-	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or if all elements in PUM row i 
-	* are true.
+	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or if all 
+	* elements in PUM row i are true.
 	*/
-	for( i = 0; i < 15; i++ )
+	 for( i = 0; i < 15; i++ )
 	{
 		if ((PUM[i][i] == 0) || ( all_elements_in_row_are_true(PUM,i) ))
 			FUV[i] = 1;
@@ -92,7 +91,8 @@ void DECIDE(void)
 	}
 
 	/*
-	* Check all of the elements in the FUV for any false entries. If there are any false entries, then
+	* Check all of the elements in the FUV for any false entries. If there are any false 
+	* entries, then
 	* we should not launch.
 	*/
 	LAUNCH = 0;
