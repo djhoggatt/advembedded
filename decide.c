@@ -145,10 +145,20 @@ boolean LIC1()
 	*/
 	for( i = 0; i < NUMPOINTS - 2; i++)
 	{
-		//Determine the slopes
-		a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
-		b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
-		
+		if((X[i+2]!=X[i+1])&&(X[i+1]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
+			b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
+		}
+		else if((X[i+2]==X[i+1])&&(X[i+1]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		//Decide if the points form a line or a triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
 		{
@@ -157,48 +167,48 @@ boolean LIC1()
 			a = length_point(X[i],Y[i],X[i+1],Y[i+1]);
 			b = length_point(X[i],Y[i],X[i+2],Y[i+2]);
 			r = length_point(X[i+2],Y[i+2],X[i+1],Y[i+1]);
-			
+		
 			//Find the longest distance formed by the three points, which should correspond to the total length
 			//of the line.
 			if (DOUBLECOMPARE(a,b) == GT)
 			{ 
 				if(DOUBLECOMPARE(a,r) == GT)
 				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
+				//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+				//line, then return true.
 					if (DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1) == GT)
 						return 1;
-				}
-				else
-				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
-						return 1;
-				}
-			}
-			else
-			{
-				if(DOUBLECOMPARE(b,r) == GT)
-				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1) == GT)
+					}
+					else
 					{
-						return 1;
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+							return 1;
 					}
 				}
 				else
 				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+					if(DOUBLECOMPARE(b,r) == GT)
 					{
-						return 1;
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1) == GT)
+						{
+							return 1;
+						}
+					}
+					else
+					{
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+						{
+							return 1;
+						}
 					}
 				}
 			}
-		}
 		else
 		{ 
 			//Determine the three angles of the triangle
