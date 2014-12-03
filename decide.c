@@ -7,7 +7,8 @@
 #include "decide.h"
 #include <math.h>
 
-// -- LIC Declarations -- //
+// -- Forward Declarations -- //
+//LIC declaration
 boolean LIC0();
 boolean LIC1();
 boolean LIC2();
@@ -24,7 +25,7 @@ boolean LIC12();
 boolean LIC13();
 boolean LIC14();
 
-// -- Helper function declarations -- //
+//Helper function declaration
 boolean all_elements_in_row_are_true(BMATRIX, int);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
@@ -36,7 +37,7 @@ int Quadrant_point(double,double);
 boolean LAUNCH = 0; // Default to no launch.
 
 // -- Decide Implementation -- //
-// See the requirements specification for details regarding the decide function requirements.
+//See the requirements specification for details regarding the decide function requirements.
 void DECIDE(void)
 {
 	//Initialization
@@ -60,12 +61,12 @@ void DECIDE(void)
 	CMV[13] = LIC13();
 	CMV[14] = LIC14();
 
+
 	/*
-	* Use the logical operators stored in the LCM and apply them to the booleans stored 
-	* in the CMV. Store the results in PUM. If the logical operator is "NOTUSED" then PUM
-	* defaults to 0 (FALSE).
+	* Use the logical operators stored in the LCM and apply them to the booleans stored in the CMV. Store the 
+	* results in PUM. If the logical operator is "NOTUSED" then PUM defaults to 0 (FALSE).
 	*/
-	for( i = 0; i < 15; i++ )
+	for(i = 0; i < 15; i++ )
 	{
 		for(j = 0; j < 15; j++ )
 		{
@@ -79,10 +80,10 @@ void DECIDE(void)
 	}
 
 	/*
-	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or if all 
-	* elements in PUM row i are true.
+	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or if all elements in PUM row i 
+	* are true.
 	*/
-	 for( i = 0; i < 15; i++ )
+	for( i = 0; i < 15; i++ )
 	{
 		if ((PUM[i][i] == 0) || ( all_elements_in_row_are_true(PUM,i) ))
 			FUV[i] = 1;
@@ -91,8 +92,7 @@ void DECIDE(void)
 	}
 
 	/*
-	* Check all of the elements in the FUV for any false entries. If there are any false 
-	* entries, then
+	* Check all of the elements in the FUV for any false entries. If there are any false entries, then
 	* we should not launch.
 	*/
 	LAUNCH = 0;
@@ -145,10 +145,20 @@ boolean LIC1()
 	*/
 	for( i = 0; i < NUMPOINTS - 2; i++)
 	{
-		//Determine the slopes
-		a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
-		b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
-		
+		if((X[i+2]!=X[i+1])&&(X[i+1]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[i+2] - Y[i+1])/(X[i+2] - X[i+1]));
+			b = ((Y[i] - Y[i+1])/(X[i] - X[i+1]));
+		}
+		else if((X[i+2]==X[i+1])&&(X[i+1]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		//Decide if the points form a line or a triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
 		{
@@ -157,48 +167,48 @@ boolean LIC1()
 			a = length_point(X[i],Y[i],X[i+1],Y[i+1]);
 			b = length_point(X[i],Y[i],X[i+2],Y[i+2]);
 			r = length_point(X[i+2],Y[i+2],X[i+1],Y[i+1]);
-			
+		
 			//Find the longest distance formed by the three points, which should correspond to the total length
 			//of the line.
 			if (DOUBLECOMPARE(a,b) == GT)
 			{ 
 				if(DOUBLECOMPARE(a,r) == GT)
 				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
+				//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+				//line, then return true.
 					if (DOUBLECOMPARE((a/2),PARAMETERS.RADIUS1) == GT)
 						return 1;
-				}
-				else
-				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
-						return 1;
-				}
-			}
-			else
-			{
-				if(DOUBLECOMPARE(b,r) == GT)
-				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1) == GT)
+					}
+					else
 					{
-						return 1;
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+							return 1;
 					}
 				}
 				else
 				{
-					//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
-					//line, then return true.
-					if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+					if(DOUBLECOMPARE(b,r) == GT)
 					{
-						return 1;
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((b/2),PARAMETERS.RADIUS1) == GT)
+						{
+							return 1;
+						}
+					}
+					else
+					{
+						//If the The radius of the circle specified by RADIUS1 is greater than half the length of the
+						//line, then return true.
+						if (DOUBLECOMPARE((r/2),PARAMETERS.RADIUS1) == GT)
+						{
+							return 1;
+						}
 					}
 				}
 			}
-		}
 		else
 		{ 
 			//Determine the three angles of the triangle
@@ -464,9 +474,20 @@ boolean LIC8()
 		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
 		//Find the slop of the line
-		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
-		b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
-		
+		if((X[pt_two]!=X[pt_one])&&(X[pt_one]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
+			b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		}
+		else if((X[pt_two]==X[pt_one])&&(X[pt_one]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		//Compare the slopes to decide if the points form a line or triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
 		{
@@ -721,8 +742,20 @@ boolean LIC13()
 		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
 		//Find the slop of the line
-		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
-		b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		if((X[pt_two]!=X[pt_one])&&(X[pt_one]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
+			b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		}
+		else if((X[pt_two]==X[pt_one])&&(X[pt_one]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		
 		//Compares Slopes to decide if line or Triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
