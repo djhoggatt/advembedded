@@ -474,9 +474,20 @@ boolean LIC8()
 		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
 		//Find the slop of the line
-		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
-		b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
-		
+		if((X[pt_two]!=X[pt_one])&&(X[pt_one]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
+			b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		}
+		else if((X[pt_two]==X[pt_one])&&(X[pt_one]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		//Compare the slopes to decide if the points form a line or triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
 		{
@@ -731,8 +742,20 @@ boolean LIC13()
 		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
 		//Find the slop of the line
-		a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
-		b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		if((X[pt_two]!=X[pt_one])&&(X[pt_one]!=X[i]))
+		{	//Determine the slopes
+			a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
+			b = ((Y[i] - Y[pt_one])/(X[i] - X[pt_one]));
+		}
+		else if((X[pt_two]==X[pt_one])&&(X[pt_one]==X[i]))
+		{    
+			a = 1;
+			b = 1;
+		}
+		else 
+		 { 	a = 1;
+		   	b = 5;
+		 }
 		
 		//Compares Slopes to decide if line or Triangle
 		if(DOUBLECOMPARE(a,b) == EQ)
