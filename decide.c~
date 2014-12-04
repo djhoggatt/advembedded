@@ -377,38 +377,36 @@ boolean LIC6()
 {
 	//Initialization
 	int i, A, B, C, j, d;
+	
+	//Loop through all of the points.
+        for(i = 0; i < (NUMPOINTS + 1 - PARAMETERS.N_PTS); i++)
+	{    
+		if((DOUBLECOMPARE(X[i],X[i + PARAMETERS.N_PTS -1]) == EQ) && (DOUBLECOMPARE(Y[i],Y[i + PARAMETERS.N_PTS -1]) == EQ))
+		{ 
+			for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+			{
+				d = length_point(X[i],Y[i],X[j],Y[j]);
+				if(DOUBLECOMPARE(PARAMETERS.DIST,d) == LT)
+					return 1;
+	   		}
+                }
+                else
+		{ 
+			A = ((Y[i + PARAMETERS.N_PTS -1]) - (Y[i]));
+			B = ((X[i]) - (X[i + PARAMETERS.N_PTS -1]));
+			C = (((-(X[i]))*A) + ((-(Y[i]))*B));
+			for ( j =i + 1;j< i + PARAMETERS.N_PTS -1; j++)
+			{
+				d = (fabs( (A*X[j]) + (B*Y[j]) + C ))/(sqrt((A*A)+(B*B)));
+				if(DOUBLECOMPARE(PARAMETERS.DIST,d) == LT)
+					return 1;
 
-	if (NUMPOINTS < 3) { return 0; }
-	else
-	{
-		//Loop through all of the points.
-		for (i = 0; i < (NUMPOINTS + 1 - PARAMETERS.N_PTS); i++)
-		{
-			if ((DOUBLECOMPARE(X[i], X[i + PARAMETERS.N_PTS - 1]) == EQ) && (DOUBLECOMPARE(Y[i], Y[i + PARAMETERS.N_PTS - 1]) == EQ))
-			{
-				for (j = i + 1; j < i + PARAMETERS.N_PTS - 1; j++)
-				{
-					d = length_point(X[i], Y[i], X[j], Y[j]);
-					if (DOUBLECOMPARE(PARAMETERS.DIST, d) == LT)
-						return 1;
-				}
-			}
-			else
-			{
-				A = ((Y[i + PARAMETERS.N_PTS - 1]) - (Y[i]));
-				B = ((X[i]) - (X[i + PARAMETERS.N_PTS - 1]));
-				C = (((-(X[i]))*A) + ((-(Y[i]))*B));
-				for (j = i + 1; j < i + PARAMETERS.N_PTS - 1; j++)
-				{
-					d = (fabs((A*X[j]) + (B*Y[j]) + C)) / (sqrt((A*A) + (B*B)));
-					if (DOUBLECOMPARE(PARAMETERS.DIST, d) == LT)
-						return 1;
-				}
-			}
+                   }
 		}
 	}
+	
 	//If no points are found that satisfy the condition, return false.
-	return 0;
+        return 0;
 }
 
 
