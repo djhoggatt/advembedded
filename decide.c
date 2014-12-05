@@ -415,7 +415,7 @@ boolean LIC5()
 
 /*
 * Launch Intercept Condition 6
-* There exists at least one set of N PTS consecutive data points such that at
+* There exists at least one set of N_PTS consecutive data points such that at
 * least one of the points lies a distance greater than DIST from the line 
 * joining the first and last of these N PTS points. If the first and last points
 * of these N PTS are identical, then the calculated distance to compare with DIST
@@ -425,33 +425,45 @@ boolean LIC5()
 boolean LIC6()
 {
 	//Initialization
-	int i, A, B, C, j, d;
-
-	if (NUMPOINTS < 3) { return 0; }
+	int current, j;
+	double distance, A, B, C;
+	// checks
+	if ((PARAMETERS.DIST < 0) ||
+		(PARAMETERS.N_PTS < 3) ||
+		(NUMPOINTS < 3) ||
+		(NUMPOINTS < PARAMETERS.N_PTS))
+	{
+		return 0;
+	}
 	else
 	{
 		//Loop through all of the points.
-		for (i = 0; i < (NUMPOINTS + 1 - PARAMETERS.N_PTS); i++)
+		for (current = 0; current < (NUMPOINTS + 1 - PARAMETERS.N_PTS); current++)
 		{
-			if ((DOUBLECOMPARE(X[i], X[i + PARAMETERS.N_PTS - 1]) == EQ) && 
-				(DOUBLECOMPARE(Y[i], Y[i + PARAMETERS.N_PTS - 1]) == EQ))
+			// if 1st and last are equal then find distance between first and each
+			// point in the set. If distance is > than DIST then return true.
+			if ((DOUBLECOMPARE(X[current], X[current + PARAMETERS.N_PTS - 1]) == EQ) &&
+				(DOUBLECOMPARE(Y[current], Y[current + PARAMETERS.N_PTS - 1]) == EQ))
 			{
-				for (j = i + 1; j < i + PARAMETERS.N_PTS - 1; j++)
+				for (j = current + 1; j < current + PARAMETERS.N_PTS - 1; j++)
 				{
-					d = length_point(X[i], Y[i], X[j], Y[j]);
-					if (DOUBLECOMPARE(PARAMETERS.DIST, d) == LT)
+					distance = length_point(X[current], Y[current], X[j], Y[j]);
+					if (DOUBLECOMPARE(PARAMETERS.DIST, distance) == LT)
 						return 1;
 				}
 			}
+			// else if 1st and last are not equal then 1) calculate line between
+			// first and last, 2) then look for point further than DIST from line
+			// 3) if found, then return true.
 			else
 			{
-				A = ((Y[i + PARAMETERS.N_PTS - 1]) - (Y[i]));
-				B = ((X[i]) - (X[i + PARAMETERS.N_PTS - 1]));
-				C = (((-(X[i]))*A) + ((-(Y[i]))*B));
-				for (j = i + 1; j < i + PARAMETERS.N_PTS - 1; j++)
+				A = ((Y[current + PARAMETERS.N_PTS - 1]) - (Y[current]));
+				B = ((X[current]) - (X[current + PARAMETERS.N_PTS - 1]));
+				C = (((-(X[current]))*A) + ((-(Y[current]))*B));
+				for (j = current + 1; j < current + PARAMETERS.N_PTS - 1; j++)
 				{
-					d = (fabs((A*X[j]) + (B*Y[j]) + C)) / (sqrt((A*A) + (B*B)));
-					if (DOUBLECOMPARE(PARAMETERS.DIST, d) == LT)
+					distance = (fabs((A*X[j]) + (B*Y[j]) + C)) / (sqrt((A*A) + (B*B)));
+					if (DOUBLECOMPARE(PARAMETERS.DIST, distance) == LT)
 						return 1;
 				}
 			}

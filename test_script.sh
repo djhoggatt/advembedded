@@ -28,5 +28,5 @@ his_file=$(ls -1v split* | tail -2 | head -1)
 diff -y --suppress-common-lines $his_file $my_file
 
 # Cleanup
-rm -rf *.tmp split? split??
+rm -rf *.tmp split*
                                                                                                                                                                                                                                               
