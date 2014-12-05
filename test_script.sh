@@ -4,9 +4,9 @@
 # usage: watch -n 1 ./test_script.sh
 # Runs test with driver.o in a loop only showing diff of CMVs
 
-# Output not sorted
-# ./test > output.tmp
-./test maxpoints=3 > output.tmp
+# Chooose parameters 
+./test > output.tmp
+# ./test maxpoints=3 > output.tmp
 
 # LIC8 Fails with this...
 #./test seed=3887884696  maxpoints=100 > output.tmp
@@ -15,25 +15,18 @@
 #./test seed=386001650  maxpoints=100 > output.tmp
 
 
-# only show CMV
-awk '/testcase/ || /CMV/ || /match/ {print}' output.tmp > cmv_only.tmp
+# Show CMV Diffs or all Diffs
+awk '/testcase/ || /CMV/ || /match/ || /PUM/ {print}' output.tmp > filtered.tmp
+# tail -n +5 output.tmp > filtered.tmp
 
-# split file into two files
-csplit -sz -n 1 -f split cmv_only.tmp /testcase/ {*}
+# split file into multiple files
+csplit -sz -n 1 -f split filtered.tmp /testcase/ {*}
 
-
-i="9"
-
-while [ $i -ge 0 ]; do
-  if [ -f split$i ]; then
-    # echo "split$[ $i-1 ] split$i"  
-    diff -y --suppress-common-lines split$[ $i-1 ] split$i 
-	diff -y --suppress-common-lines split$[ $i-1 ] split$i > diff_out.txt
-    break
-  else
-  i=$[$i-2]
-  fi
-done
+# Diff the last (failed) test case
+my_file=$(ls -1v split* | tail -1)
+his_file=$(ls -1v split* | tail -2 | head -1)
+diff -y --suppress-common-lines $his_file $my_file
 
 # Cleanup
-# rm -rf *.tmp split?
+rm -rf *.tmp split? split??
+                                                                                                                                                                                                                                              

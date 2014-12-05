@@ -1,6 +1,6 @@
 /*
-* Team 11  CS 5785
-* Team Assignment #1: decide.c
+* Team 11  CS 5785, Fall 2014
+* decide.c
 * SPENCER CLEGG, DENVER HOGGATT, ROHITH PRASAD, COLTON OTTLEY
 */
 
@@ -63,7 +63,6 @@ void DECIDE(void)
 	CMV[13] = LIC13();
 	CMV[14] = LIC14();
 
-
 	/*
 	* Use the logical operators stored in the LCM and apply them to the booleans
 	* stored in the CMV. Store the results in PUM. If the logical operator is
@@ -73,33 +72,43 @@ void DECIDE(void)
 	{
 		for (j = 0; j < 15; j++)
 		{
-			if (LCM[i][j] == ORR)
+			if (i == j)
+			{
+				// do nothing --> skip diags
+			}
+			else if (LCM[i][j] == ORR)
+			{
 				PUM[i][j] = (CMV[i] || CMV[j]);
+			}				
 			else if (LCM[i][j] == ANDD)
+			{
 				PUM[i][j] = (CMV[i] && CMV[j]);
-			else if (LCM[i][j] == NOTUSED)
+			}				
+			else // if (LCM[i][j] == NOTUSED)
+			{
 				PUM[i][j] = 1;
-			else
-				PUM[i][j] = 0;
+			}							
 		}
 	}
 
 	/*
-	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i] is false or
-	* if all elements in PUM row i are true.
+	* Loop through the FUV. FUV[i] should be set to true if PUM[i,i]
+	* is false or if all elements in PUM row i are true.
 	*/
 	for (i = 0; i < 15; i++)
 	{
-		if ((PUM[i][i] == 0) || (all_elements_in_row_are_true(PUM, i)))
+		if (PUM[i][i] == 0)
 		{
 			FUV[i] = 1;
 		}
-			
+		else if (all_elements_in_row_are_true(PUM, i))
+		{
+			FUV[i] = 1;
+		}
 		else
 		{
 			FUV[i] = 0;
-		}
-			
+		}			
 	}
 
 	/*
@@ -1103,4 +1112,4 @@ int Quadrant_point(double x, double y)
 	else if ((x <= 0) && (y < 0))
 		return 3;
 	return 4;
-}s
+}
