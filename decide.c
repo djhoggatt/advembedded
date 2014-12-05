@@ -549,21 +549,21 @@ boolean LIC8()
 		//Find the slope of the line
 		if ((X[pt_two] != X[pt_one]) && (X[pt_one] != X[i]))
 		{	//Determine the slopes
-			a = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
-			b = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
+			sa = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
+			sb = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
 		}
 		else if ((X[pt_two] == X[pt_one]) && (X[pt_one] == X[i]))
 		{
-			a = 1;
-			b = 1;
+			sa = 1;
+			sb = 1;
 		}
 		else
 		{
-			a = 1;
-			b = 5;
+			sa = 1;
+			sb = 5;
 		}
 		//Compare the slopes to decide if the points form a line or triangle
-		if (DOUBLECOMPARE(a, b) == EQ)
+		if (DOUBLECOMPARE(sa, sb) == EQ)
 		{
 			//The points form a line, so compute the greatest separation between 
 			// the points to find the length of the line.
@@ -846,22 +846,22 @@ boolean LIC13()
 		//Find the slope of the line
 		if ((X[pt_two] != X[pt_one]) && (X[pt_one] != X[i]))
 		{	//Determine the slopes
-			a = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
-			b = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
+			wa = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
+			wb = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
 		}
 		else if ((X[pt_two] == X[pt_one]) && (X[pt_one] == X[i]))
 		{
-			a = 1;
-			b = 1;
+			wa = 1;
+			wb = 1;
 		}
 		else
 		{
-			a = 1;
-			b = 5;
+			wa = 1;
+			wb = 5;
 		}
 
 		//Compares Slopes to decide if line or Triangle
-		if (DOUBLECOMPARE(a, b) == EQ)
+		if (DOUBLECOMPARE(wa, wb) == EQ)
 		{
 			//The points form a line, so compute the greatest separation between 
 			// the points to find the length of the line.
