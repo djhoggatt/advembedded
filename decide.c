@@ -579,14 +579,14 @@ boolean LIC8()
 				{
 					// The radius of the circle must be greater than or equal to
 					// half the length of the line
-					if (DOUBLECOMPARE((a / 2), PARAMETERS.RADIUS1))
+					if (DOUBLECOMPARE((a / 2), PARAMETERS.RADIUS1) == GT)
 						return 1;
 				}
 				else
 				{
 					//The radius of the circle must be greater than or equal to
 					// half the length of the line
-					if (DOUBLECOMPARE((r / 2), PARAMETERS.RADIUS1))
+					if (DOUBLECOMPARE((r / 2), PARAMETERS.RADIUS1) == GT)
 						return 1;
 				}
 			}
@@ -596,14 +596,14 @@ boolean LIC8()
 				{
 					//The radius of the circle must be greater than or equal to 
 					/// half the length of the line
-					if (DOUBLECOMPARE((b / 2), PARAMETERS.RADIUS1))
+					if (DOUBLECOMPARE((b / 2), PARAMETERS.RADIUS1) == GT)
 						return 1;
 				}
 				else
 				{
 					//The radius of the circle must be greater than or equal to 
 					// half the length of the line
-					if (DOUBLECOMPARE((r / 2), PARAMETERS.RADIUS1))
+					if (DOUBLECOMPARE((r / 2), PARAMETERS.RADIUS1) == GT)
 						return 1;
 				}
 			}
