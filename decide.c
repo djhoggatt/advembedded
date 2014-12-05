@@ -27,10 +27,11 @@ boolean LIC14();
 
 //Helper function declaration
 boolean all_elements_in_row_are_true(BMATRIX, int);
+boolean contained_in_circle(int, int, int, double);
 double Calculate_Area_Triangle(double, double, double, double ,double ,double);
 double length_point(double ,double ,double ,double );
 double circumcenter(double ,double ,double ,double ,double ,double );
-double angle_points(double, double, double, double ,double ,double);
+double angle_points(double, double, double, double, double, double);
 int Quadrant_point(double,double);
 
 // -- Globals -- //
@@ -96,11 +97,11 @@ void DECIDE(void)
 	* Check all of the elements in the FUV for any false entries. If there are any false entries, then
 	* we should not launch.
 	*/
-	LAUNCH = 0;
-	for(i = 0; i < 15; i++ )
+	LAUNCH = 1;
+	for( i = 0; i < 15; i++ )
 	{
 		if (FUV[i] == 0)
-			LAUNCH = 1;
+			LAUNCH = 0;
 	}
 
 }
@@ -451,9 +452,9 @@ boolean LIC7()
 
 /*
 * Launch Intercept Condition 8
-* There exists at least one set of three data points separated by exactly A PTS and B PTS consecutive intervening
+* There exists at least one set of three data points separated by exactly A_PTS and B_PTS consecutive intervening
 * points, respectively, that cannot be contained within or on a circle of radius RADIUS1. The condition is not
-* met when NUMPOINTS < 5.
+* met when NUMPOINTS < 5. 
 */
 boolean LIC8()
 {
@@ -461,10 +462,14 @@ boolean LIC8()
 	int i;
 	double a, b, r, ang1, ang2, ang3;
 	
-	//The condition is not met when NUMPOINTS < 5
-	if(NUMPOINTS < 5)
+	//The condition is not met when NUMPOINTS < 5, also checking for valid inputs per spec (page three #8)
+	if ((NUMPOINTS < 5) ||
+		(PARAMETERS.A_PTS < 1) ||
+		(PARAMETERS.B_PTS < 1) ||
+		((PARAMETERS.A_PTS + PARAMETERS.B_PTS) > (NUMPOINTS - 3)))  
+	{
 		return 0;
-
+	}	
 	//For each point (X[i], Y[i]), determine the next point as seperated by the number of points
 	//designated by A_PTS. Take that point, and determine the next point as seperated by the
 	//number of points designated by B_PTS.
@@ -689,8 +694,8 @@ boolean LIC11()
 boolean LIC12()
 {
 	//Initialization
-	boolean cond_1;
-	boolean cond_2;
+	boolean cond_1=0;
+	boolean cond_2=0;
 	double dist;
 	int i;
 	
@@ -725,7 +730,8 @@ boolean LIC12()
 boolean LIC13()
 {
 	//Initialization
-	boolean cond_1, cond_2;
+	boolean cond_1 = 0;
+	boolean cond_2 = 0;
 	int i;
 	double a, b, r, ang1, ang2, ang3;
 	
@@ -744,7 +750,7 @@ boolean LIC13()
 		int pt_one = i+PARAMETERS.A_PTS+1;
 		int pt_two = pt_one+PARAMETERS.B_PTS+1;
 		
-		//Find the slop of the line
+		//Find the slope of the line
 		if((X[pt_two]!=X[pt_one])&&(X[pt_one]!=X[i]))
 		{	//Determine the slopes
 			a = ((Y[pt_two] - Y[pt_one])/(X[pt_two] - X[pt_one]));
@@ -862,7 +868,8 @@ boolean LIC13()
 boolean LIC14()
 {
 	//Initialization
-	boolean cond_1, cond_2;
+	boolean cond_1 = 0;
+	boolean cond_2 = 0;
 	double area;
 	int i;
 	
@@ -987,4 +994,13 @@ int Quadrant_point(double x,double y)
 	else if((x<=0)&&(y<0))
 		return 3;
 	return 4;
+}
+
+/*
+* This function takes in index of three points (X[i] Y[i]), (X[j] Y[j]), (X[k] Y[k]) and
+* returns 1 if those points can be contained in a circle of radius R.
+*/
+boolean containedInCircle(int i, int j, int k, double r)
+{
+
 }

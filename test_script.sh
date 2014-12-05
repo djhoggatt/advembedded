@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Spencer Clegg -- spencermclegg@gmail.com -- Nov 2014
+# usage: watch -n 1 ./test_script.sh
+# Runs test with driver.o in a loop only showing diff of CMVs
+
 # Sort output
 #./test | sort > output.tmp
 
 # Output not sorted
-# ./test > output.tmp
-./test maxpoints=3 > output.tmp
+#./test > output.tmp
+./test maxpoints=6 > output.tmp
 
 # remove redundant lines...
 # awk '!x[$0]++' output.tmp
