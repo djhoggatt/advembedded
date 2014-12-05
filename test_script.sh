@@ -4,15 +4,16 @@
 # usage: watch -n 1 ./test_script.sh
 # Runs test with driver.o in a loop only showing diff of CMVs
 
-# Sort output
-#./test | sort > output.tmp
-
 # Output not sorted
-#./test > output.tmp
-./test maxpoints=6 > output.tmp
+# ./test > output.tmp
+./test maxpoints=3 > output.tmp
 
-# remove redundant lines...
-# awk '!x[$0]++' output.tmp
+# LIC8 Fails with this...
+#./test seed=3887884696  maxpoints=100 > output.tmp
+
+# LIC6 Fails with this...
+#./test seed=386001650  maxpoints=100 > output.tmp
+
 
 # only show CMV
 awk '/testcase/ || /CMV/ || /match/ {print}' output.tmp > cmv_only.tmp
@@ -27,6 +28,7 @@ while [ $i -ge 0 ]; do
   if [ -f split$i ]; then
     # echo "split$[ $i-1 ] split$i"  
     diff -y --suppress-common-lines split$[ $i-1 ] split$i 
+	diff -y --suppress-common-lines split$[ $i-1 ] split$i > diff_out.txt
     break
   else
   i=$[$i-2]
@@ -34,4 +36,4 @@ while [ $i -ge 0 ]; do
 done
 
 # Cleanup
-rm -rf *.tmp split?
+# rm -rf *.tmp split?
