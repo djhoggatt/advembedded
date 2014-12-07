@@ -5,18 +5,13 @@
 # Runs test with driver.o in a loop only showing diff of CMVs
 
 # Chooose parameters 
-./test > output.tmp
-# ./test maxpoints=3 > output.tmp
-
-# LIC8 Fails with this...
-#./test seed=3887884696  maxpoints=100 > output.tmp
-
-# LIC6 Fails with this...
-#./test seed=386001650  maxpoints=100 > output.tmp
-
-
+#./test > output.tmp
+./test seed=3379710800 maxpoints=10 > output.tmp
+#./test maxpoints=10 > output.tmp
+grep -i --color seed output.tmp
+grep -i --color NUMPOINTS output.tmp
 # Show CMV Diffs or all Diffs
-awk '/testcase/ || /CMV/ || /match/ || /PUM/ {print}' output.tmp > filtered.tmp
+awk '/testcase/ || /CMV/ || /match/ {print}' output.tmp > filtered.tmp
 # tail -n +5 output.tmp > filtered.tmp
 
 # split file into multiple files
@@ -25,8 +20,10 @@ csplit -sz -n 1 -f split filtered.tmp /testcase/ {*}
 # Diff the last (failed) test case
 my_file=$(ls -1v split* | tail -1)
 his_file=$(ls -1v split* | tail -2 | head -1)
+
+diff -y --suppress-common-lines $his_file $my_file > check.out
 diff -y --suppress-common-lines $his_file $my_file
 
 # Cleanup
-rm -rf *.tmp split*
-                                                                                                                                                                                                                                              
+# rm -rf *.tmp
+rm -rf split*                                                                                                                                                                                                                                           
