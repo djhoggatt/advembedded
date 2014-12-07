@@ -511,8 +511,6 @@ boolean LIC7()
 	//If no points are found that satisfy the condition, return false.
 	return 0;
 }
-
-
 /*
 * Launch Intercept Condition 8
 * There exists at least one set of three data points separated by exactly A_PTS
@@ -548,7 +546,6 @@ boolean LIC8()
 	}
 	return 0;
 }
-
 
 /*
 * Launch Intercept Condition 9
@@ -744,22 +741,22 @@ boolean LIC13()
 		//Find the slope of the line
 		if ((X[pt_two] != X[pt_one]) && (X[pt_one] != X[i]))
 		{	//Determine the slopes
-			a = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
-			b = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
+			wa = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
+			wb = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
 		}
 		else if ((X[pt_two] == X[pt_one]) && (X[pt_one] == X[i]))
 		{
-			a = 1;
-			b = 1;
+			wa = 1;
+			wb = 1;
 		}
 		else
 		{
-			a = 1;
-			b = 5;
+			wa = 1;
+			wb = 5;
 		}
 
 		//Compares Slopes to decide if line or Triangle
-		if (DOUBLECOMPARE(a, b) == EQ)
+		if (DOUBLECOMPARE(wa, wb) == EQ)
 		{
 			//The points form a line, so compute the greatest separation between 
 			// the points to find the length of the line.
@@ -1105,5 +1102,5 @@ boolean are_points_in_circle(double point1[], double point2[], double point3[], 
 	{
 		return 0;
 	}
-		return 1;
+	return 1;
 }
