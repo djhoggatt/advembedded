@@ -76,24 +76,30 @@ main()
     //Enter main while loop
     while (TRUE) {
         //Read input from user
-	printf ("User Input: ");
+	printf ("Input: ");
+
+	//Gets is dangerous. For this assignment, we'll use it, but on future
+	//assignments, we are going to replace it with something safer.
         gets(in);
         strcat(in,"\n");
-	printf("Got Here, with value: %s", in);
 
         //Encrypt
         for(i = 0; in[i]!= '\0'; i++)
         { 
 	    in[i] = rot13(in[i]);
         }
+
+	//Print out the encryption
+	printf("Encrypted Input: %s", in);
          
 	//Write input to UART
 	write(fd, in, strlen(in));
+
+	//Delay for a bit
 	for(i = 0; i < 3000000; i++);
-	//Read the input from the UART
-	//Note, that the read blocks until a newline character is read.
-        //fgets(out,5,);
+
 	printf("Recieved From Server: ");
+
 	while(out != '\n')
 	{
                 read(fd,&out, 1);
@@ -101,18 +107,10 @@ main()
 		//Print out the output
 		printf("%c", out);
         }
+
+	//Print out the newline
 	printf("\n");
 	out = '\0';
-	/*
-	int i;
-	char * s;
-	scanf("%s", s);
-	for(i = 0; i < sizeof(*s); i++)
-	{
-		//We might need to use this approach
-	}
-        write(fd, *s, sizeof(*s));
-	for(i = 0; i < 3000000; i++);*/
     }
 
     //restore old port settings
