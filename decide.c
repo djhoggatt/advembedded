@@ -30,8 +30,8 @@ boolean all_elements_in_row_are_true(BMATRIX, int);
 boolean are_points_in_circle(double*, double*, double*, double);
 double area_of_triangle(double, double, double, double, double, double);
 double distance_between_points(double, double, double, double);
-double circumcenter(double, double, double, double, double, double);
-double angle_points(double, double, double, double, double, double);
+double circumradius(double, double, double, double, double, double);
+static double angle_points(double, double, double, double, double, double);
 int Quadrant_point(double, double);
 
 // -- Globals -- //
@@ -256,7 +256,7 @@ boolean LIC1()
 			if ((DOUBLECOMPARE(ang1, PI / 2) < GT) &&
 				(DOUBLECOMPARE(ang2, PI / 2) < GT) &&
 				(DOUBLECOMPARE(ang3, PI / 2) < GT))
-				r = circumcenter(X[i], Y[i], X[i + 1], Y[i + 1],
+				r = circumradius(X[i], Y[i], X[i + 1], Y[i + 1],
 				X[i + 2], Y[i + 2]);
 			else
 			{
@@ -741,22 +741,22 @@ boolean LIC13()
 		//Find the slope of the line
 		if ((X[pt_two] != X[pt_one]) && (X[pt_one] != X[i]))
 		{	//Determine the slopes
-			wa = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
-			wb = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
+			a = ((Y[pt_two] - Y[pt_one]) / (X[pt_two] - X[pt_one]));
+			b = ((Y[i] - Y[pt_one]) / (X[i] - X[pt_one]));
 		}
 		else if ((X[pt_two] == X[pt_one]) && (X[pt_one] == X[i]))
 		{
-			wa = 1;
-			wb = 1;
+			a = 1;
+			b = 1;
 		}
 		else
 		{
-			wa = 1;
-			wb = 5;
+			a = 1;
+			b = 5;
 		}
 
 		//Compares Slopes to decide if line or Triangle
-		if (DOUBLECOMPARE(wa, wb) == EQ)
+		if (DOUBLECOMPARE(a, b) == EQ)
 		{
 			//The points form a line, so compute the greatest separation between 
 			// the points to find the length of the line.
@@ -842,7 +842,7 @@ boolean LIC13()
 			if ((DOUBLECOMPARE(ang1, PI / 2) < GT) &&
 				(DOUBLECOMPARE(ang2, PI / 2) < GT) &&
 				(DOUBLECOMPARE(ang3, PI / 2) < GT))
-				r = circumcenter(X[i], Y[i], X[pt_one], Y[pt_one],
+				r = circumradius(X[i], Y[i], X[pt_one], Y[pt_one],
 				X[pt_two], Y[pt_two]);
 			else
 			{
@@ -961,11 +961,11 @@ double distance_between_points(double x1, double y1, double x2, double y2)
 * This function takes the vertices of a triangle and returns their circumradius.
 * The formula used is that of a standard circumradius of a triangle.
 */
-double circumcenter(double x1, double y1, double x2, double y2,
+double circumradius(double x1, double y1, double x2, double y2,
 	double x3, double y3)
 {
 	//Initialization
-	double area, a, b, c;
+	double a, b, c;
 
 	//Calculate the distances between the points
 	a = distance_between_points(x1, y1, x2, y2);
@@ -973,16 +973,18 @@ double circumcenter(double x1, double y1, double x2, double y2,
 	c = distance_between_points(x3, y3, x2, y2);
 
 	//Calculate the area of the triangle
-	area = area_of_triangle(x1, y1, x2, y2, x3, y3);
+	//area = area_of_triangle(x1, y1, x2, y2, x3, y3);
+	double s = (a + b + c) / 2;
 
 	//Determine the radius from the area and return
-	return (a*b*c) / (4 * area);
+	//return (a*b*c) / (4 * area);
+	return (a * b * c) / (4 * sqrt(s * (a + b - s) * (a + c - s) * (b + c - s)));
 }
 
 /*
 * This function returns the angle as calculated between the three points.
 */
-double angle_points(double x1, double y1, double x2, double y2,
+static double angle_points(double x1, double y1, double x2, double y2,
 	double x3, double y3)
 {
 	//Initialization
@@ -1024,10 +1026,15 @@ boolean are_points_in_circle(double point1[], double point2[], double point3[], 
 	double distance_pt1_pt3 = distance_between_points(point1[0], point1[1], point3[0], point3[1]);
 	double distance_pt1_pt2 = distance_between_points(point1[0], point1[1], point2[0], point2[1]);
 	double distance_pt2_pt3 = distance_between_points(point2[0], point2[1], point3[0], point3[1]);
-	double area = area_of_triangle(point1[0], point1[1],
+	double ang1 = angle_points(point1[0], point1[1], point2[0], point2[1], point3[0], point3[1]);
+	double ang2 = angle_points(point1[0], point1[1], point3[0], point3[1], point2[0], point2[1]);
+	double ang3 = angle_points(point2[0], point2[1], point1[0], point1[1], point3[0], point3[1]);
+	double circ_radius = 0;
+	double area = area_of_triangle(
+		point1[0], point1[1],
 		point2[0], point2[1],
 		point3[0], point3[1]);
-	double circumradius = (distance_pt1_pt3*distance_pt1_pt2*distance_pt2_pt3) / ((double)4 * area);
+	//double circumradius = (distance_pt1_pt3*distance_pt1_pt2*distance_pt2_pt3) / ((double)4 * area);
 	// If radius is 0, return 0
 	if (DOUBLECOMPARE(radius, (double)0) == EQ)
 	{
@@ -1097,8 +1104,34 @@ boolean are_points_in_circle(double point1[], double point2[], double point3[], 
 			return 1;
 		}
 	}
+	// If the triangle is an acute or right triangle, then RADIUS 1
+	// should be greater than or equal to the circumradius of the 
+	// triangle. For obtuse triangles, the radius of circle must be 
+	// greater than half the length of the longest side.
+	else if ((DOUBLECOMPARE(ang1, PI / 2) < GT) &&
+		(DOUBLECOMPARE(ang2, PI / 2) < GT) &&
+		(DOUBLECOMPARE(ang3, PI / 2) < GT))
+		circ_radius = circumradius(
+		point1[0], point1[1],
+		point2[0], point2[1],
+		point3[0], point3[1]);
+	else
+	{
+		if (DOUBLECOMPARE(ang1, PI / 2) == GT)
+		{
+			circ_radius = (distance_between_points(point1[0], point1[1], point3[0], point3[1])) / 2;
+		}
+		else if (DOUBLECOMPARE(ang2, PI / 2) == GT)
+		{
+			circ_radius = (distance_between_points(point1[0], point1[1], point2[0], point2[1])) / 2;
+		}
+		else
+		{
+			circ_radius = (distance_between_points(point2[0], point2[1], point3[0], point3[1])) / 2;
+		}
+	}
 	// Finally, if the cirucmradius is > the radius then return 0
-	else if (DOUBLECOMPARE(circumradius, radius) == GT)
+	if (DOUBLECOMPARE(circ_radius, radius) == GT)
 	{
 		return 0;
 	}

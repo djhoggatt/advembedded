@@ -6,7 +6,9 @@
 
 # Chooose parameters 
 #./test > output.tmp
+# LIC8 False.. seed=4178373335 maxpoints=10 
 ./test seed=3379710800 maxpoints=10 > output.tmp
+# LIC8 True: 
 #./test maxpoints=10 > output.tmp
 grep -i --color seed output.tmp
 grep -i --color NUMPOINTS output.tmp
